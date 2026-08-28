@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ระบบเงินโครงการร่วม 3 บริษัท</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,11 +25,13 @@
   }
   *{font-family:'Sarabun',sans-serif;}
   .mono{font-family:'IBM Plex Mono',monospace;}
-  body{background:linear-gradient(135deg, #fdf4ff 0%, #eef6ff 45%, #f0fdfa 100%);color:var(--ink);min-height:100vh;}
-  input[type="text"], input[type="number"]{
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;height:100%;}
+  body{background:linear-gradient(135deg, #fdf4ff 0%, #eef6ff 45%, #f0fdfa 100%);color:var(--ink);min-height:100vh;touch-action:manipulation;overscroll-behavior-y:contain;}
+  input[type="text"], input[type="number"], select{
     background:transparent;
     border-bottom:1.5px solid var(--line);
     outline:none;
+    font-size:16px; /* keep >=16px so iOS Safari doesn't auto-zoom the page when a field gets focus */
   }
   input[type="text"]:focus, input[type="number"]:focus{
     border-bottom-color:var(--teal);
@@ -82,12 +84,38 @@
 
   <!-- ===================== COT PANEL ===================== -->
   <div id="panelCot">
-    <section class="mb-6 rounded-xl border p-5" style="border-color:var(--line);background:var(--card)">
-      <div class="flex items-baseline justify-between">
-        <p class="text-xs mono uppercase tracking-wide" style="color:#8b7ca8">ยอดที่ <span id="cotNameLabel">COT</span> จ่ายเองรวม</p>
+    <section class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
+        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดคงเหลือ <span id="cotNameLabel">COT</span></p>
+        <p id="cotBalance" class="text-2xl font-bold mono mt-1" style="color:var(--teal)">0.00</p>
       </div>
-      <p id="cotTotal" class="text-3xl font-bold mono mt-1" style="color:var(--ink)">0.00</p>
-      <p class="text-xs mt-0.5" style="color:#a898c4">บาท</p>
+      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
+        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงิน Advance เข้ารวม</p>
+        <p id="cotIn" class="text-2xl font-bold mono mt-1" style="color:var(--green)">0.00</p>
+      </div>
+      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
+        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดจ่ายเองรวม</p>
+        <p id="cotOut" class="text-2xl font-bold mono mt-1" style="color:var(--red)">0.00</p>
+      </div>
+    </section>
+
+    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
+      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">บันทึกเงินเข้า <span id="cotInLabel">COT</span> (Advance จากบริษัท)</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input id="cotInNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น เงินทดรองจ่ายรอบที่ 1" class="flex-1 py-2 text-sm">
+        <input id="cotInAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-44 py-2 text-sm mono">
+      </div>
+      <div class="mt-3 pt-3 border-t" style="border-color:var(--line)">
+        <div class="flex items-center gap-3">
+          <label for="cotInReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+            📷 แนบรูปหลักฐานการรับเงิน (ถ่ายรูป/เลือกจากคลัง)
+          </label>
+          <input id="cotInReceiptInput" type="file" accept="image/*" multiple class="hidden">
+          <span id="cotInReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
+        </div>
+        <div id="cotInReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+      </div>
+      <button id="cotInAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
     </section>
 
     <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
@@ -117,10 +145,12 @@
 
     <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
       <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
+        <div class="w-14">ประเภท</div>
         <div class="flex-1">รายการ</div>
         <div class="w-28 hide-mobile">สถานที่</div>
         <div class="w-16 text-right hide-mobile">ใบเสร็จ</div>
-        <div class="w-28 text-right">จำนวนเงิน</div>
+        <div class="w-24 text-right">จำนวนเงิน</div>
+        <div class="w-24 text-right hide-mobile">คงเหลือ</div>
         <div class="w-8"></div>
       </div>
       <div id="cotList"></div>
@@ -166,15 +196,6 @@
       </div>
     </section>
 
-    <!-- payer ratio chart -->
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <div class="flex items-baseline justify-between mb-1">
-        <p class="text-xs mono uppercase tracking-wide" style="color:#8b7ca8">สัดส่วนรายจ่ายกองกลางตามผู้จ่ายจริง (สำหรับออกใบกำกับภาษี)</p>
-      </div>
-      <p class="text-xs mb-4" style="color:#a898c4">เส้นมาตรฐาน = สัดส่วนเป้าหมาย 47:32:21 · แท่งสี = สัดส่วนที่จ่ายจริงสะสมของแต่ละบริษัท</p>
-      <div id="payerChart" class="space-y-4"></div>
-      <p id="payerChartEmpty" class="text-sm text-center py-4" style="color:#a898c4">ยังไม่มีรายจ่ายที่ระบุผู้จ่าย</p>
-    </section>
     <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
       <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">เติมเงินเข้ากองกลาง (ตามสัดส่วน 47:32:21)</p>
       <div class="flex flex-col sm:flex-row gap-3">
@@ -229,6 +250,16 @@
       <button id="outAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--red)">− บันทึกรายจ่าย</button>
     </section>
 
+    <!-- payer ratio chart -->
+    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
+      <div class="flex items-baseline justify-between mb-1">
+        <p class="text-xs mono uppercase tracking-wide" style="color:#8b7ca8">สัดส่วนรายจ่ายกองกลางตามผู้จ่ายจริง (สำหรับออกใบกำกับภาษี)</p>
+      </div>
+      <p class="text-xs mb-4" style="color:#a898c4">เส้นมาตรฐาน = สัดส่วนเป้าหมาย 47:32:21 · แท่งสี = สัดส่วนที่จ่ายจริงสะสมของแต่ละบริษัท</p>
+      <div id="payerChart" class="space-y-4"></div>
+      <p id="payerChartEmpty" class="text-sm text-center py-4" style="color:#a898c4">ยังไม่มีรายจ่ายที่ระบุผู้จ่าย</p>
+    </section>
+
     <!-- history -->
     <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
       <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
@@ -254,9 +285,14 @@
   <p id="saveStatus" class="text-xs mono text-center mt-6" style="color:#a898c4">&nbsp;</p>
 </div>
 
-<!-- popup / toast confirming save success or failure -->
-<div id="toast" class="fixed left-1/2 bottom-6 px-4 py-2.5 rounded-xl text-white text-sm font-semibold shadow-lg text-center"
-     style="transform:translate(-50%,10px);opacity:0;transition:all .25s ease;z-index:50;background:var(--green);max-width:90vw;pointer-events:none"></div>
+<!-- popup confirming save success or failure -->
+<div id="toastOverlay" class="fixed inset-0 flex items-center justify-center px-6"
+     style="z-index:60;background:rgba(76,59,107,0.35);opacity:0;pointer-events:none;transition:opacity .2s ease;">
+  <div id="toastBox" class="rounded-2xl px-6 py-6 text-center shadow-2xl" style="background:#fff;max-width:320px;width:100%;transform:scale(0.9);transition:transform .2s ease;border-top:4px solid var(--green)">
+    <div id="toastIcon" class="text-4xl mb-2">✅</div>
+    <div id="toastMsg" class="text-base font-semibold" style="color:var(--ink)"></div>
+  </div>
+</div>
 
 <script>
 const RATIOS = { a: 47, b: 32, c: 21 };
@@ -299,26 +335,36 @@ let records = []; // {id, category:'cot'|'fund-in'|'fund-out', name, amount, sit
 let companyNames = { a: 'COT', b: 'TMCC', c: 'CPP' };
 let activeTab = 'cot';
 // each entry is an array of { dataUrl, name } objects, one per attached photo
-let pendingReceipt = { cot: [], in: [], out: [] };
+let pendingReceipt = { cot: [], cotIn: [], in: [], out: [] };
 let pendingPayer = null; // 'a' | 'b' | 'c' — เลือกก่อนบันทึกรายจ่ายกองกลาง
 
 const fmt = n => n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const uid = () => 'r' + Date.now() + Math.random().toString(36).slice(2,7);
 
-// ---- toast / popup ----
+// ---- popup confirming save/delete success or failure ----
 let toastTimer = null;
 function showToast(message, isError){
-  const el = document.getElementById('toast');
-  el.textContent = message;
-  el.style.background = isError ? 'var(--red)' : 'var(--green)';
-  el.style.opacity = '1';
-  el.style.transform = 'translate(-50%,0)';
+  const overlay = document.getElementById('toastOverlay');
+  const box = document.getElementById('toastBox');
+  const icon = document.getElementById('toastIcon');
+  const msg = document.getElementById('toastMsg');
+  icon.textContent = isError ? '❌' : '✅';
+  msg.textContent = message;
+  box.style.borderTopColor = isError ? 'var(--red)' : 'var(--green)';
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'auto';
+  box.style.transform = 'scale(1)';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    el.style.opacity = '0';
-    el.style.transform = 'translate(-50%,10px)';
-  }, isError ? 4000 : 2200);
+  toastTimer = setTimeout(hideToast, isError ? 3500 : 2000);
 }
+function hideToast(){
+  const overlay = document.getElementById('toastOverlay');
+  const box = document.getElementById('toastBox');
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'none';
+  box.style.transform = 'scale(0.9)';
+}
+document.getElementById('toastOverlay').addEventListener('click', hideToast);
 
 function updateCaptions(){
   document.getElementById('capA').textContent = `${companyNames.a} · 47%`;
@@ -329,6 +375,7 @@ function updateCaptions(){
   document.getElementById('labelC').textContent = `${companyNames.c} · 21%`;
   document.getElementById('cotNameLabel').textContent = companyNames.a;
   document.getElementById('cotAddLabel').textContent = companyNames.a;
+  document.getElementById('cotInLabel').textContent = companyNames.a;
   document.getElementById('tabCotLabel').textContent = companyNames.a + ' จ่ายเอง';
 }
 
@@ -349,8 +396,10 @@ function setTab(tab){
 document.getElementById('tabCotBtn').addEventListener('click', () => setTab('cot'));
 document.getElementById('tabFundBtn').addEventListener('click', () => setTab('fund'));
 
-function calcCotTotal(){
-  return records.filter(r => r.category === 'cot').reduce((s,r) => s + r.amount, 0);
+function calcCotTotals(){
+  const ins = records.filter(r => r.category === 'cot-in').reduce((s,r) => s + r.amount, 0);
+  const outs = records.filter(r => r.category === 'cot').reduce((s,r) => s + r.amount, 0);
+  return { ins, outs, balance: ins - outs };
 }
 function calcFundTotals(){
   const ins = records.filter(r => r.category === 'fund-in').reduce((s,r) => s + r.amount, 0);
@@ -418,27 +467,42 @@ function receiptCellHtml(receiptUrls){
 }
 
 function renderCot(){
+  const { ins, outs, balance } = calcCotTotals();
+  document.getElementById('cotBalance').textContent = fmt(balance);
+  document.getElementById('cotIn').textContent = fmt(ins);
+  document.getElementById('cotOut').textContent = fmt(outs);
+
   const list = document.getElementById('cotList');
   const empty = document.getElementById('cotEmpty');
-  const items = records.filter(r => r.category === 'cot');
-  document.getElementById('cotTotal').textContent = fmt(calcCotTotal());
+  const items = records.filter(r => r.category === 'cot' || r.category === 'cot-in')
+                        .sort((a,b) => a.ts - b.ts);
   list.innerHTML = '';
   if(items.length === 0){ empty.style.display = 'block'; }
   else{
     empty.style.display = 'none';
+    let running = 0;
     items.forEach(it => {
+      const isIn = it.category === 'cot-in';
+      running += isIn ? it.amount : -it.amount;
       const row = document.createElement('div');
       row.className = 'flex items-center px-4 py-3 border-b text-sm';
       row.style.borderColor = 'var(--line)';
+      const badge = isIn
+        ? `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--green-bg);color:var(--green)">เข้า</span>`
+        : `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--red-bg);color:var(--red)">ออก</span>`;
       const receiptCell = receiptCellHtml(it.receiptUrls);
       const siteCell = it.site
         ? `<span class="text-xs" style="color:#7c6a9c">${it.site}</span>`
         : `<span class="text-xs" style="color:#e5defa">—</span>`;
+      const amountColor = isIn ? 'var(--green)' : 'var(--red)';
+      const amountSign = isIn ? '+' : '−';
       row.innerHTML = `
+        <div class="w-14">${badge}</div>
         <div class="flex-1 truncate pr-2">${it.name}</div>
         <div class="w-28 truncate pr-2 hide-mobile">${siteCell}</div>
         <div class="w-16 text-right hide-mobile">${receiptCell}</div>
-        <div class="w-28 text-right mono">${fmt(it.amount)}</div>
+        <div class="w-24 text-right mono" style="color:${amountColor}">${amountSign}${fmt(it.amount)}</div>
+        <div class="w-24 text-right mono hide-mobile" style="color:#8b7ca8">${fmt(running)}</div>
         <div class="w-8 text-right"><button data-id="${it.id}" class="del-btn text-xs" style="color:var(--red)">✕</button></div>
       `;
       list.appendChild(row);
@@ -449,7 +513,7 @@ function renderCot(){
       });
     });
   }
-  renderSiteSummary(items, 'cotSiteSummary', 'cotSiteSummaryEmpty');
+  renderSiteSummary(records.filter(r => r.category === 'cot'), 'cotSiteSummary', 'cotSiteSummaryEmpty');
 }
 
 function renderSiteSummary(items, listId, emptyId){
@@ -591,17 +655,17 @@ async function syncToSheet(record){
     if(data.success){
       record.receiptUrls = data.receiptUrls || [];
       status.textContent = 'บันทึกไป Google Sheets สำเร็จ';
-      showToast('✅ บันทึกรายการสำเร็จ', false);
+      showToast('บันทึกรายการสำเร็จ', false);
       renderAll();
     } else {
       status.textContent = 'บันทึกไม่สำเร็จ: ' + (data.error || 'unknown error');
-      showToast('❌ บันทึกไม่สำเร็จ: ' + (data.error || 'unknown error'), true);
+      showToast('บันทึกไม่สำเร็จ: ' + (data.error || 'unknown error'), true);
       records = records.filter(r => r.id !== record.id); // roll back the optimistic add
       renderAll();
     }
   }catch(e){
     status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (บันทึก)';
-    showToast('❌ เชื่อมต่อ Google Sheets ไม่สำเร็จ ลองใหม่อีกครั้ง', true);
+    showToast('เชื่อมต่อ Google Sheets ไม่สำเร็จ ลองใหม่อีกครั้ง', true);
     records = records.filter(r => r.id !== record.id);
     renderAll();
     console.error(e);
@@ -620,15 +684,15 @@ async function deleteFromSheet(id){
     const data = await res.json();
     if(data.success){
       status.textContent = 'ลบรายการแล้ว';
-      showToast('🗑️ ลบรายการสำเร็จ', false);
+      showToast('ลบรายการสำเร็จ', false);
     } else {
       status.textContent = 'ลบไม่สำเร็จ: ' + (data.error || 'unknown error');
-      showToast('❌ ลบไม่สำเร็จ: ' + (data.error || 'unknown error'), true);
+      showToast('ลบไม่สำเร็จ: ' + (data.error || 'unknown error'), true);
       records = backup; renderAll(); // roll back
     }
   }catch(e){
     status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ลบรายการ)';
-    showToast('❌ เชื่อมต่อ Google Sheets ไม่สำเร็จ (ลบรายการ)', true);
+    showToast('เชื่อมต่อ Google Sheets ไม่สำเร็จ (ลบรายการ)', true);
     records = backup; renderAll();
     console.error(e);
   }
@@ -673,6 +737,7 @@ function renderReceiptPreview(nameId, previewId, key){
 }
 
 wireReceiptInput('cotReceiptInput', 'cotReceiptName', 'cotReceiptPreview', 'cot');
+wireReceiptInput('cotInReceiptInput', 'cotInReceiptName', 'cotInReceiptPreview', 'cotIn');
 wireReceiptInput('inReceiptInput', 'inReceiptName', 'inReceiptPreview', 'in');
 wireReceiptInput('outReceiptInput', 'outReceiptName', 'outReceiptPreview', 'out');
 
@@ -701,6 +766,26 @@ document.getElementById('cotAddBtn').addEventListener('click', () => {
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
   nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
   resetReceipt('cotReceiptInput','cotReceiptName','cotReceiptPreview','cot');
+  renderAll(); syncToSheet(rec);
+});
+
+// ---- COT advance money in ----
+document.getElementById('cotInAddBtn').addEventListener('click', () => {
+  const noteInput = document.getElementById('cotInNote');
+  const amountInput = document.getElementById('cotInAmount');
+  const amount = parseFloat(amountInput.value);
+  if(isNaN(amount) || amount <= 0){
+    amountInput.style.borderBottomColor = 'var(--red)';
+    return;
+  }
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  const note = noteInput.value.trim() || `เงิน Advance เข้า ${companyNames.a}`;
+  const rec = { id: uid(), category: 'cot-in', name: note, amount,
+                receiptBase64List: pendingReceipt.cotIn.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
+  records.push(rec);
+  noteInput.value=''; amountInput.value='';
+  amountInput.style.borderBottomColor='var(--line)';
+  resetReceipt('cotInReceiptInput','cotInReceiptName','cotInReceiptPreview','cotIn');
   renderAll(); syncToSheet(rec);
 });
 
@@ -798,11 +883,11 @@ document.getElementById('resetBtn').addEventListener('click', async () => {
     const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'clearAll' }) });
     const data = await res.json();
     status.textContent = data.success ? 'ล้างข้อมูลแล้ว' : 'ล้างไม่สำเร็จ: ' + (data.error || 'unknown error');
-    if(data.success){ showToast('🗑️ ล้างข้อมูลทั้งหมดแล้ว', false); }
-    else{ showToast('❌ ล้างไม่สำเร็จ: ' + (data.error || 'unknown error'), true); records = backup; renderAll(); }
+    if(data.success){ showToast('ล้างข้อมูลทั้งหมดแล้ว', false); }
+    else{ showToast('ล้างไม่สำเร็จ: ' + (data.error || 'unknown error'), true); records = backup; renderAll(); }
   }catch(e){
     status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ล้างข้อมูล)';
-    showToast('❌ เชื่อมต่อ Google Sheets ไม่สำเร็จ (ล้างข้อมูล)', true);
+    showToast('เชื่อมต่อ Google Sheets ไม่สำเร็จ (ล้างข้อมูล)', true);
     records = backup; renderAll();
     console.error(e);
   }
