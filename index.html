@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -58,16 +59,13 @@
   <!-- Company names -->
   <section class="mb-6 grid grid-cols-3 gap-3">
     <div>
-      <label class="text-xs mono" style="color:#8b7ca8">ชื่อบริษัท (47%)</label>
-      <input id="nameA" type="text" class="w-full py-1 text-sm font-medium" value="COT">
+      <label id="labelA" class="text-sm mono font-semibold" style="color:#4c3b6b">COT · 47%</label>
     </div>
     <div>
-      <label class="text-xs mono" style="color:#8b7ca8">ชื่อบริษัท (32%)</label>
-      <input id="nameB" type="text" class="w-full py-1 text-sm font-medium" value="TMCC">
+      <label id="labelB" class="text-sm mono font-semibold" style="color:#4c3b6b">TMCC · 32%</label>
     </div>
     <div>
-      <label class="text-xs mono" style="color:#8b7ca8">ชื่อบริษัท (21%)</label>
-      <input id="nameC" type="text" class="w-full py-1 text-sm font-medium" value="CPP">
+      <label id="labelC" class="text-sm mono font-semibold" style="color:#4c3b6b">CPP · 21%</label>
     </div>
   </section>
 
@@ -268,7 +266,6 @@ function populateSiteSelects(){
 }
 populateSiteSelects();
 const webAppUrl = 'https://script.google.com/macros/s/AKfycbzlVahVJV68ZYZK25MFQ5MfTPYmprBPJGKJZUewZoWlktFHzY_CuKa4Ps10YZhP8Ram/exec';
-const NAMES_KEY = 'expense-split-3co-names'; // ชื่อบริษัท เก็บเฉพาะในเบราว์เซอร์นี้ (ไม่ sync ข้ามเครื่อง)
 
 let records = []; // {id, category:'cot'|'fund-in'|'fund-out', name, amount, site, breakdown, receiptUrl, receiptBase64, ts}
 let companyNames = { a: 'COT', b: 'TMCC', c: 'CPP' };
@@ -282,6 +279,9 @@ function updateCaptions(){
   document.getElementById('capA').textContent = `${companyNames.a} · 47%`;
   document.getElementById('capB').textContent = `${companyNames.b} · 32%`;
   document.getElementById('capC').textContent = `${companyNames.c} · 21%`;
+  document.getElementById('labelA').textContent = `${companyNames.a} · 47%`;
+  document.getElementById('labelB').textContent = `${companyNames.b} · 32%`;
+  document.getElementById('labelC').textContent = `${companyNames.c} · 21%`;
   document.getElementById('cotNameLabel').textContent = companyNames.a;
   document.getElementById('cotAddLabel').textContent = companyNames.a;
   document.getElementById('tabCotLabel').textContent = companyNames.a + ' จ่ายเอง';
@@ -431,20 +431,7 @@ function renderAll(){
   renderFund();
 }
 
-function saveNamesLocally(){
-  try{ localStorage.setItem(NAMES_KEY, JSON.stringify(companyNames)); }catch(e){}
-}
-function loadNamesLocally(){
-  try{
-    const raw = localStorage.getItem(NAMES_KEY);
-    if(raw){
-      companyNames = { ...companyNames, ...JSON.parse(raw) };
-      document.getElementById('nameA').value = companyNames.a;
-      document.getElementById('nameB').value = companyNames.b;
-      document.getElementById('nameC').value = companyNames.c;
-    }
-  }catch(e){}
-}
+
 
 // map a Sheet row (from doGet) back into our internal record shape
 function rowToRecord(r){
@@ -628,13 +615,7 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
 });
 
 // ---- company names (kept per-browser only; not synced to the sheet) ----
-['nameA','nameB','nameC'].forEach((id, i) => {
-  const key = ['a','b','c'][i];
-  document.getElementById(id).addEventListener('change', e => {
-    companyNames[key] = e.target.value.trim() || companyNames[key];
-    renderAll(); saveNamesLocally();
-  });
-});
+// company names are fixed (not editable in the UI)
 
 document.getElementById('resetBtn').addEventListener('click', async () => {
   if(!confirm('ต้องการล้างรายการทั้งหมดหรือไม่? (จะลบข้อมูลใน Google Sheets ด้วย และกู้คืนไม่ได้)')) return;
@@ -656,7 +637,6 @@ document.getElementById('resetBtn').addEventListener('click', async () => {
   }
 });
 
-loadNamesLocally();
 loadFromSheet();
 </script>
 </body>
