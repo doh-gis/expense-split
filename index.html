@@ -1,293 +1,301 @@
+
 <!DOCTYPE html>
 <html lang="th">
-<head>
+<head><script>window.__V0_SANDBOX_ID__="sb-2b42ylsy8n0e";window.__V0_CHAT_ID__="cyRuCQcDo5B";(function v_(){try{if(!/\bFirefox\//.test(navigator.userAgent)||"u"<typeof PerformanceNavigationTiming)return;let e=Object.getOwnPropertyDescriptor(PerformanceResourceTiming.prototype,"transferSize");if(!e||!e.get)return;let t=e.get;Object.defineProperty(PerformanceNavigationTiming.prototype,"transferSize",{configurable:!0,get(){let e=t.call(this);if(0!==e||"back_forward"===this.type)return e;let r=window.next,n=r&&"string"==typeof r.version?r.version:"",i=/^16\.2\.(\d+)/.exec(n);return i&&Number(i[1])>=7?1:e}})}catch{}})();window.__V0_SOURCE_MAP_FRAME_ROOT__="file:///vercel/share/v0-project/.next/dev/static";;(function vw(e){let t=Symbol.for("__next_dev_bridge_runtime_observer__"),r=window[t],n=e||{},i=n.messageType||"next-dev-bridge:runtime",a=n.readyMessageType||"next-dev-bridge:runtime-ready",o=n.resetMessageType||"next-dev-bridge:runtime-reset",s=n.targetOrigin||"*",l=!1!==n.isAppDirectory,c="string"==typeof n.sourceMapEndpoint&&n.sourceMapEndpoint?n.sourceMapEndpoint:"",u="string"==typeof n.sourceMapFrameRoot&&n.sourceMapFrameRoot?n.sourceMapFrameRoot.replace(/\/+$/,""):"";if(r)return void f(a,{existing:!0,href:window.location.href,windowId:r.windowId});let d=1,p=`${Date.now()}-${Math.random().toString(36).slice(2)}`,h={errors:[]};function f(e,t){window.parent!==window&&window.parent.postMessage({type:e,...t},s)}async function m(e){let t={...e,id:d++,severity:"recoverable",at:new Date().toISOString()};h.errors=[...h.errors,t],f(i,{event:{type:"runtime:error",error:t,errors:h.errors},state:h,href:window.location.href,windowId:p}),c&&_(t).then(e=>{h.errors.some(e=>e.id===t.id)&&(t.mapped=e,h.errors=h.errors.map(e=>e.id===t.id?t:e),f(i,{event:{type:"runtime:error",error:t,errors:h.errors},state:h,href:window.location.href,windowId:p}))}).catch(()=>{})}function g(){0!==h.errors.length&&(h.errors=[],f(i,{event:{type:"runtime:cleared",errors:[]},state:h,href:window.location.href,windowId:p}))}function y(e){var t,r,n,i,a;let o,s,l,c;m((o=w((t=e).error,t.message||"Uncaught error"),s=t.filename||void 0,l=D(t.lineno),c=D(t.colno),{source:"error",name:o.name,message:o.message,stack:o.stack||(r=o.message,n=s,i=l,a=c,n&&i&&a?`${r}
+    at <anonymous> (${n}:${i}:${a})`:""),filename:s,line:l,column:c}))}function v(e){let t;m({source:"unhandledrejection",name:(t=w(e.reason,"Unhandled promise rejection")).name,message:t.message,stack:t.stack})}function b(e){let t=e.data;t&&"object"==typeof t&&t.type===o&&g()}function w(e,t){return e instanceof Error?{name:e.name||"Error",message:e.message||t,stack:e.stack||""}:e&&"object"==typeof e?{name:"string"==typeof e.name?e.name:"Error",message:"string"==typeof e.message?e.message:function(e){try{return JSON.stringify(e)}catch{return""}}(e)||t,stack:"string"==typeof e.stack?e.stack:""}:{name:"Error",message:"string"==typeof e?e:null==e?t:String(e),stack:""}}async function _(e){var t,r;let n=(t=String(e.stack).split("\n").map(j).filter(Boolean),r=e.filename,t.map(e=>({...e,file:function(e,t){var r,n;if("string"!=typeof e||0===e.length)return;let i=C(e);if(i)return I(i);if(r=e,/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(r))return e;if(t&&N(t)===N(e)){let e=C(t);return e?I(e):t}let a=e.startsWith("_next/")?`/${e}`:e;return a.startsWith("/_next/")?I(a):!(n=a).includes("/")&&n.endsWith(".js")&&(n.startsWith("_")||n.includes("._.")||n.startsWith("node_modules_")||n.startsWith("turbopack-"))?I(`/_next/static/chunks/${a}`):e}(e.file,r)})));return{message:e.message,stack:e.stack,frames:n,mappedFrames:n.length>0?await x(n):[]}}async function x(e){let t=function(e){let t=[],r=new Set;for(let n of(k(t,r,e),[O,A,P])){let i=function(e,t){let r=!1,n=e.map(e=>{if("string"!=typeof e.file)return e;let n=t(e.file);return n&&n!==e.file?(r=!0,{...e,file:n}):e});return r?n:null}(e,n);i&&k(t,r,i)}return t}(e),r=null;for(let n of t){let t=await S(n);if(function(e){for(let n of e){var t,r;let e=U(t=n)&&"fulfilled"===t.status&&U(t.value)&&U(t.value.originalStackFrame)?t.value.originalStackFrame:null;if(!e||!0===e.ignored)continue;let i="string"!=typeof(r=e.file)?"":r.trim();if(!(!i||function(e){let t=R(e);return/\/(?:_next\/static|\.next\/dev\/static)\/chunks\//.test(t)||t.includes("/next/dist/compiled/")}(i)))return!0}return!1}(t.mappedFrames))return E(e,t.mappedFrames);if(r=t.mappedFrames,!t.shouldTryNextVariant)break}return r??$(e,"No stack frames to map.")}async function S(e){try{let t=function(e){try{return new URL(e,window.location.href).origin!==window.location.origin}catch{return!1}}(c),r={body:JSON.stringify({frames:e,isServer:!1,isEdgeServer:!1,isAppDirectory:l,sourceOrigin:window.location.origin}),cache:"no-store",credentials:t?"omit":"same-origin",method:"POST",mode:t?"cors":"same-origin"};t||(r.headers={"content-type":"application/json"});let n=await fetch(c,{...r});if(!n.ok||204===n.status){let t=await n.text().catch(()=>"");return{mappedFrames:$(e,t||"No original stack frame response from Next dev server."),shouldTryNextVariant:!1}}let i=await n.json();if(!Array.isArray(i))return{mappedFrames:$(e,"Invalid original stack frame response from Next dev server."),shouldTryNextVariant:!1};return{mappedFrames:E(e,i),shouldTryNextVariant:!0}}catch(t){return{mappedFrames:$(e,t instanceof Error?t.message:String(t)),shouldTryNextVariant:!1}}}function E(e,t){return e.map((e,r)=>t[r]||{status:"rejected",reason:"No original stack frame response for frame."})}function $(e,t){return e.map(()=>({status:"rejected",reason:t}))}function k(e,t,r){let n=JSON.stringify(r.map(e=>e.file));t.has(n)||(t.add(n),e.push(r))}function I(e){return u?`${u}/${e.replace(/^\/_next\/static\/?/,"")}`:e}function O(e){let t=T(e);return t?`.next/dev/static/${t.replace(/^\/_next\/static\/?/,"")}`:null}function A(e){let t=T(e);return t?t.replace(/^\/+/,""):null}function P(e){let t=T(e);if(!t)return null;try{return new URL(t,window.location.origin).href}catch{return null}}function T(e){var t,r;let n,i=R(e);if(i.startsWith("/_next/static/"))return i;let a=(r="/.next/dev/static/",-1===(n=(t=i).indexOf(r))?"":t.slice(n+r.length));return a?`/_next/static/${a}`:""}function C(e){if(e.startsWith("/_next/"))return e;if(e.startsWith("_next/"))return`/${e}`;try{let t=new URL(e);return t.pathname.startsWith("/_next/")?t.pathname:""}catch{return""}}function R(e){try{return new URL(e).pathname}catch{}return e.startsWith("/")?e:`/${e}`}function N(e){return e.split("?")[0].split(/[\\/]/).pop()||e}function U(e){return"object"==typeof e&&null!==e}function j(e){let t=e.trim();if(!t.startsWith("at "))return null;let r=t.slice(3),n="<anonymous>",i=r,a=r.indexOf("("),o=r.endsWith(")")?r.length-1:-1;-1!==a&&-1!==o&&o>a&&(n=r.slice(0,a).trim()||"<anonymous>",i=r.slice(a+1,o));let s=/^(.*):(\d+):(\d+)$/.exec(i);return s?{file:s[1],methodName:n,arguments:[],line1:Number(s[2]),column1:Number(s[3])}:null}function D(e){return"number"==typeof e&&Number.isFinite(e)&&e>0?e:void 0}window.addEventListener("error",y),window.addEventListener("unhandledrejection",v),window.addEventListener("message",b),window[t]={windowId:p,getSnapshot:()=>({errors:h.errors.slice()}),reset:g,stop:function(){window.removeEventListener("error",y),window.removeEventListener("unhandledrejection",v),window.removeEventListener("message",b),delete window[t]}},f(a,{existing:!1,href:window.location.href,windowId:p})})({"messageType":"next-dev-bridge:event","sourceMapEndpoint":"/_v0/next-dev-bridge-stack-frames","sourceMapFrameRoot":"file:///vercel/share/v0-project/.next/dev/static"});</script><script async src="/v0-runtime-dist.js"></script><style>nextjs-portal{display: none !important}</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d9488">
 <title>ระบบเงินโครงการร่วม 3 บริษัท</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#4c3b6b;
-    --paper:#f4f0ff;
+    --ink:#1f2440;
+    --ink-soft:#6b6d8a;
+    --ink-faint:#a6a8bf;
+    --paper:#f5f6fb;
     --card:#ffffff;
-    --line:#e5defa;
-    --teal:#14b8a6;
-    --teal-dark:#0d9488;
-    --amber:#f59e0b;
+    --line:#e8e9f3;
+    --line-soft:#f0f1f8;
+    --teal:#0d9488;
+    --teal-dark:#0f766e;
+    --teal-ring:rgba(13,148,136,.15);
+    --teal-bg:#e6faf6;
+    --blue:#3b82f6;
+    --blue-bg:#e7f0ff;
+    --amber:#d97706;
     --amber-bg:#fef3c7;
-    --teal-bg:#ccfbf1;
-    --red:#f43f5e;
-    --red-bg:#ffe4e6;
+    --red:#e11d48;
+    --red-bg:#ffe4ea;
+    --green:#16a34a;
     --green-bg:#dcfce7;
-    --green:#22c55e;
   }
-  *{font-family:'Sarabun',sans-serif;}
-  .mono{font-family:'IBM Plex Mono',monospace;}
-  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;height:100%;}
-  body{background:linear-gradient(135deg, #fdf4ff 0%, #eef6ff 45%, #f0fdfa 100%);color:var(--ink);min-height:100vh;touch-action:manipulation;overscroll-behavior-y:contain;}
+  *{font-family:'Sarabun',sans-serif;-webkit-tap-highlight-color:transparent;}
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;height:100%;background:var(--paper);}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    touch-action:manipulation;
+    overscroll-behavior-y:contain;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
   input[type="text"], input[type="number"], select{
-    background:transparent;
-    border-bottom:1.5px solid var(--line);
+    width:100%;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
     outline:none;
-    font-size:16px; /* keep >=16px so iOS Safari doesn't auto-zoom the page when a field gets focus */
+    font-size:16px; /* keep >=16px so iOS Safari doesn't auto-zoom on focus */
+    color:var(--ink);
+    transition:border-color .15s ease, box-shadow .15s ease;
+    -webkit-appearance:none;
+    appearance:none;
   }
-  input[type="text"]:focus, input[type="number"]:focus{
-    border-bottom-color:var(--teal);
+  input::placeholder{color:var(--ink-faint);}
+  input:focus, select:focus{
+    border-color:var(--teal);
+    box-shadow:0 0 0 4px var(--teal-ring);
   }
-  .tab-btn{transition:all .15s ease;}
+  select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236b6d8a' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    padding-right:38px;
+  }
+  .field-label{font-size:13px;font-weight:600;color:var(--ink-soft);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(31,36,64,.04),0 8px 24px -16px rgba(31,36,64,.12);}
+  .btn{transition:transform .1s ease, filter .15s ease;}
+  .btn:active{transform:scale(.98);filter:brightness(.97);}
+  .tab-btn{transition:all .18s ease;}
   ::-webkit-scrollbar{height:6px;width:6px;}
   ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
-  @media (max-width:640px){ .hide-mobile{display:none;} }
+  .sticky-top{position:sticky;top:0;z-index:40;background:linear-gradient(var(--paper) 78%, rgba(245,246,251,0));padding-top:env(safe-area-inset-top);}
 </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-<div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+<div class="max-w-md mx-auto px-4 pb-16">
 
-  <!-- Header -->
-  <header class="mb-6">
-    <p class="text-xs tracking-widest uppercase mono" style="color:var(--teal)">โครงการร่วม 3 บริษัท</p>
-    <div class="flex items-baseline justify-between flex-wrap gap-2">
-      <h1 class="text-2xl sm:text-3xl font-bold mt-1" style="color:var(--ink)">ระบบเงินโครงการ</h1>
-      <button id="resetBtn" class="text-xs mono px-3 py-1.5 rounded border" style="border-color:var(--line);color:#7c6a9c">
-        ล้างข้อมูลทั้งหมด
+  <!-- Sticky header + tabs -->
+  <div class="sticky-top">
+    <header class="pt-5 pb-3">
+      <p class="text-[11px] tracking-[.2em] uppercase mono font-semibold" style="color:var(--teal)">โครงการร่วม 3 บริษัท</p>
+      <h1 class="text-2xl font-bold mt-0.5" style="color:var(--ink)">ระบบเงินโครงการ</h1>
+    </header>
+
+    <!-- Segmented tabs -->
+    <div class="grid grid-cols-2 gap-2 pb-3">
+      <button id="tabCotBtn" class="tab-btn py-2.5 px-2 rounded-xl text-sm font-bold border-2 text-center">
+        <span id="tabCotLabel">COT จ่ายเอง</span>
+      </button>
+      <button id="tabFundBtn" class="tab-btn py-2.5 px-2 rounded-xl text-sm font-bold border-2 text-center">
+        กองกลาง
       </button>
     </div>
-  </header>
-
-  <!-- Company names -->
-  <section class="mb-6 grid grid-cols-3 gap-3">
-    <div>
-      <label id="labelA" class="text-sm mono font-semibold" style="color:#4c3b6b">COT · 47%</label>
-    </div>
-    <div>
-      <label id="labelB" class="text-sm mono font-semibold" style="color:#4c3b6b">TMCC · 32%</label>
-    </div>
-    <div>
-      <label id="labelC" class="text-sm mono font-semibold" style="color:#4c3b6b">CPP · 21%</label>
-    </div>
-  </section>
-
-  <!-- Tabs -->
-  <div class="flex gap-2 mb-6">
-    <button id="tabCotBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-semibold border-2">
-      <span id="tabCotLabel">COT จ่ายเอง</span>
-      <span class="block text-xs mono mt-0.5 font-normal opacity-80">บันทึกแยก ไม่เกี่ยวกับบริษัทอื่น</span>
-    </button>
-    <button id="tabFundBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-semibold border-2">
-      กองกลาง (Common Fund)
-      <span class="block text-xs mono mt-0.5 font-normal opacity-80">เงินรวมของ 3 บริษัท ตามสัดส่วน 47:32:21</span>
-    </button>
   </div>
 
   <!-- ===================== COT PANEL ===================== -->
-  <div id="panelCot">
-    <section class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดคงเหลือ <span id="cotNameLabel">COT</span></p>
-        <p id="cotBalance" class="text-2xl font-bold mono mt-1" style="color:var(--teal)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงิน Advance เข้ารวม</p>
-        <p id="cotIn" class="text-2xl font-bold mono mt-1" style="color:var(--green)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดจ่ายเองรวม</p>
-        <p id="cotOut" class="text-2xl font-bold mono mt-1" style="color:var(--red)">0.00</p>
+  <div id="panelCot" class="pt-1 space-y-5">
+
+    <!-- hero balance -->
+    <section class="card p-5" style="background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);border:none;box-shadow:0 12px 30px -14px rgba(13,148,136,.6)">
+      <p class="text-xs mono uppercase tracking-wide text-white/80">ยอดคงเหลือ <span id="cotNameLabel">COT</span></p>
+      <p id="cotBalance" class="text-4xl font-bold mono mt-1 text-white">0.00</p>
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div class="rounded-xl px-3 py-2.5 bg-white/15 backdrop-blur">
+          <p class="text-[11px] mono uppercase text-white/75">Advance เข้ารวม</p>
+          <p id="cotIn" class="text-lg font-bold mono text-white mt-0.5">0.00</p>
+        </div>
+        <div class="rounded-xl px-3 py-2.5 bg-white/15 backdrop-blur">
+          <p class="text-[11px] mono uppercase text-white/75">จ่ายเองรวม</p>
+          <p id="cotOut" class="text-lg font-bold mono text-white mt-0.5">0.00</p>
+        </div>
       </div>
     </section>
 
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">บันทึกเงินเข้า <span id="cotInLabel">COT</span> (Advance จากบริษัท)</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="cotInNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น เงินทดรองจ่ายรอบที่ 1" class="flex-1 py-2 text-sm">
-        <input id="cotInAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-44 py-2 text-sm mono">
+    <!-- money in -->
+    <section class="card p-4">
+      <p class="text-sm font-bold mb-1" style="color:var(--ink)">บันทึกเงินเข้า <span id="cotInLabel">COT</span></p>
+      <p class="text-xs mb-3" style="color:var(--ink-faint)">เงิน Advance ที่บริษัทโอนเข้ามา</p>
+      <div class="space-y-3">
+        <input id="cotInNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น เงินทดรองรอบที่ 1">
+        <input id="cotInAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
       </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <div class="flex items-center gap-3">
-          <label for="cotInReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-            📷 แนบรูปหลักฐานการรับเงิน (ถ่ายรูป/เลือกจากคลัง)
-          </label>
-          <input id="cotInReceiptInput" type="file" accept="image/*" multiple class="hidden">
-          <span id="cotInReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
-        </div>
+      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+        <label for="cotInReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+          📷 แนบรูปหลักฐานการรับเงิน
+        </label>
+        <input id="cotInReceiptInput" type="file" accept="image/*" multiple class="hidden">
+        <p id="cotInReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
         <div id="cotInReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
-      <button id="cotInAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
+      <button id="cotInAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
     </section>
 
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">เพิ่มรายการที่ <span id="cotAddLabel">COT</span> จ่ายเอง</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="cotItemName" type="text" placeholder="เช่น ค่าน้ำมันรถ COT" class="flex-1 py-2 text-sm">
-        <input id="cotItemAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-40 py-2 text-sm mono">
-      </div>
-      <div class="mt-3">
-        <label class="text-xs mono" style="color:#8b7ca8">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-        <select id="cotItemSite" class="w-full py-2 text-sm" style="background:transparent;border-bottom:1.5px solid var(--line);outline:none">
-          <option value="">— ไม่ระบุสถานที่ —</option>
-        </select>
-      </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <div class="flex items-center gap-3">
-          <label for="cotReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-            📷 แนบรูปใบเสร็จ (ถ่ายรูป/เลือกจากคลัง)
-          </label>
-          <input id="cotReceiptInput" type="file" accept="image/*" multiple class="hidden">
-          <span id="cotReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
+    <!-- add expense -->
+    <section class="card p-4">
+      <p class="text-sm font-bold mb-3" style="color:var(--ink)">เพิ่มรายการที่ <span id="cotAddLabel">COT</span> จ่ายเอง</p>
+      <div class="space-y-3">
+        <input id="cotItemName" type="text" placeholder="เช่น ค่าน้ำมันรถ COT">
+        <input id="cotItemAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
+        <div>
+          <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
+          <select id="cotItemSite" class="mt-1.5">
+            <option value="">— ไม่ระบุสถานที่ —</option>
+          </select>
         </div>
+      </div>
+      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+        <label for="cotReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+          📷 แนบรูปใบเสร็จ
+        </label>
+        <input id="cotReceiptInput" type="file" accept="image/*" multiple class="hidden">
+        <p id="cotReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
         <div id="cotReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
-      <button id="cotAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--teal)">+ เพิ่มรายการ</button>
+      <button id="cotAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--teal)">+ เพิ่มรายการ</button>
     </section>
 
-    <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
-        <div class="w-14">ประเภท</div>
-        <div class="flex-1">รายการ</div>
-        <div class="w-28 hide-mobile">สถานที่</div>
-        <div class="w-16 text-right hide-mobile">ใบเสร็จ</div>
-        <div class="w-24 text-right">จำนวนเงิน</div>
-        <div class="w-24 text-right hide-mobile">คงเหลือ</div>
-        <div class="w-8"></div>
-      </div>
+    <!-- history -->
+    <section class="card overflow-hidden">
+      <div class="px-4 py-3 border-b text-sm font-bold" style="border-color:var(--line-soft);color:var(--ink)">รายการเคลื่อนไหว</div>
       <div id="cotList"></div>
-      <div id="cotEmpty" class="px-4 py-10 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการ</div>
+      <div id="cotEmpty" class="px-4 py-12 text-center text-sm" style="color:var(--ink-faint)">ยังไม่มีรายการ</div>
     </section>
 
-    <section class="mt-6 rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="px-4 py-2.5 border-b text-xs mono uppercase tracking-wide" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">สรุปยอดแยกตามสถานที่ลงพื้นที่</div>
+    <!-- site summary -->
+    <section class="card overflow-hidden">
+      <div class="px-4 py-3 border-b text-sm font-bold" style="border-color:var(--line-soft);color:var(--ink)">สรุปยอดตามสถานที่ลงพื้นที่</div>
       <div id="cotSiteSummary"></div>
-      <div id="cotSiteSummaryEmpty" class="px-4 py-6 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการที่ระบุสถานที่</div>
+      <div id="cotSiteSummaryEmpty" class="px-4 py-8 text-center text-sm" style="color:var(--ink-faint)">ยังไม่มีรายการที่ระบุสถานที่</div>
     </section>
   </div>
 
   <!-- ===================== FUND PANEL ===================== -->
-  <div id="panelFund">
+  <div id="panelFund" class="pt-1 space-y-5">
+
     <!-- proportion strip -->
-    <div class="mb-6 rounded-xl overflow-hidden border" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-sm font-semibold">
-        <div id="capA" class="flex-1 py-2.5 text-center border-r" style="border-color:var(--line);background:var(--teal-bg);color:var(--teal-dark)"></div>
-        <div id="capB" class="flex-1 py-2.5 text-center border-r" style="border-color:var(--line);background:#dbeafe;color:#1d4ed8"></div>
-        <div id="capC" class="flex-1 py-2.5 text-center" style="background:var(--amber-bg);color:var(--amber)"></div>
+    <section class="card overflow-hidden">
+      <div class="grid grid-cols-3 text-sm font-bold text-center">
+        <div id="capA" class="py-2.5" style="background:var(--teal-bg);color:var(--teal-dark)"></div>
+        <div id="capB" class="py-2.5" style="background:var(--blue-bg);color:#1d4ed8"></div>
+        <div id="capC" class="py-2.5" style="background:var(--amber-bg);color:var(--amber)"></div>
       </div>
       <div class="flex h-2">
         <span style="width:47%;background:var(--teal)"></span>
-        <span style="width:32%;background:#60a5fa"></span>
+        <span style="width:32%;background:var(--blue)"></span>
         <span style="width:21%;background:var(--amber)"></span>
-      </div>
-    </div>
-
-    <!-- balance summary -->
-    <section class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดคงเหลือกองกลาง</p>
-        <p id="fundBalance" class="text-2xl font-bold mono mt-1" style="color:var(--teal)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงินเข้ารวม</p>
-        <p id="fundIn" class="text-2xl font-bold mono mt-1" style="color:var(--green)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงินออกรวม</p>
-        <p id="fundOut" class="text-2xl font-bold mono mt-1" style="color:var(--red)">0.00</p>
       </div>
     </section>
 
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">เติมเงินเข้ากองกลาง (ตามสัดส่วน 47:32:21)</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="inNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น รอบที่ 1" class="flex-1 py-2 text-sm">
-        <input id="inAmount" type="number" placeholder="ยอดรวมที่เติม (บาท)" class="w-full sm:w-44 py-2 text-sm mono">
-      </div>
-      <p id="inBreakdown" class="text-xs mono mt-2" style="color:#8b7ca8"></p>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <div class="flex items-center gap-3">
-          <label for="inReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-            📷 แนบสลิปโอนเงิน (ถ่ายรูป/เลือกจากคลัง)
-          </label>
-          <input id="inReceiptInput" type="file" accept="image/*" multiple class="hidden">
-          <span id="inReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
+    <!-- hero balance -->
+    <section class="card p-5" style="background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);border:none;box-shadow:0 12px 30px -14px rgba(13,148,136,.6)">
+      <p class="text-xs mono uppercase tracking-wide text-white/80">ยอดคงเหลือกองกลาง</p>
+      <p id="fundBalance" class="text-4xl font-bold mono mt-1 text-white">0.00</p>
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div class="rounded-xl px-3 py-2.5 bg-white/15 backdrop-blur">
+          <p class="text-[11px] mono uppercase text-white/75">เงินเข้ารวม</p>
+          <p id="fundIn" class="text-lg font-bold mono text-white mt-0.5">0.00</p>
         </div>
+        <div class="rounded-xl px-3 py-2.5 bg-white/15 backdrop-blur">
+          <p class="text-[11px] mono uppercase text-white/75">เงินออกรวม</p>
+          <p id="fundOut" class="text-lg font-bold mono text-white mt-0.5">0.00</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- money in -->
+    <section class="card p-4">
+      <p class="text-sm font-bold mb-1" style="color:var(--ink)">เติมเงินเข้ากองกลาง</p>
+      <p class="text-xs mb-3" style="color:var(--ink-faint)">แบ่งตามสัดส่วน 47 : 32 : 21 อัตโนมัติ</p>
+      <div class="space-y-3">
+        <input id="inNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น รอบที่ 1">
+        <input id="inAmount" type="number" inputmode="decimal" placeholder="ยอดรวมที่เติม (บาท)" class="mono">
+      </div>
+      <p id="inBreakdown" class="text-xs mono mt-2 leading-relaxed" style="color:var(--teal-dark)"></p>
+      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+        <label for="inReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+          📷 แนบสลิปโอนเงิน
+        </label>
+        <input id="inReceiptInput" type="file" accept="image/*" multiple class="hidden">
+        <p id="inReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
         <div id="inReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
-      <button id="inAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
+      <button id="inAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
     </section>
 
     <!-- add expense -->
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">บันทึกรายจ่ายจากกองกลาง</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="outName" type="text" placeholder="เช่น ค่าที่พักลงพื้นที่" class="flex-1 py-2 text-sm">
-        <input id="outAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-40 py-2 text-sm mono">
+    <section class="card p-4">
+      <p class="text-sm font-bold mb-3" style="color:var(--ink)">บันทึกรายจ่ายจากกองกลาง</p>
+      <div class="space-y-3">
+        <input id="outName" type="text" placeholder="เช่น ค่าที่พักลงพื้นที่">
+        <input id="outAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
+        <div>
+          <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
+          <select id="outSite" class="mt-1.5">
+            <option value="">— ไม่ระบุสถานที่ —</option>
+          </select>
+        </div>
       </div>
-      <div class="mt-3">
-        <label class="text-xs mono" style="color:#8b7ca8">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-        <select id="outSite" class="w-full py-2 text-sm" style="background:transparent;border-bottom:1.5px solid var(--line);outline:none">
-          <option value="">— ไม่ระบุสถานที่ —</option>
-        </select>
-      </div>
-      <div id="payerPickerWrap" class="mt-4 pt-3 border-t" style="border-color:var(--line)">
-        <label class="text-xs mono" style="color:#8b7ca8">ผู้จ่ายจริง (สำหรับออกใบกำกับภาษี) — บังคับเลือก</label>
+      <div id="payerPickerWrap" class="mt-4 pt-3 border-t" style="border-color:var(--line-soft)">
+        <label class="field-label">ผู้จ่ายจริง (ออกใบกำกับภาษี) · บังคับเลือก</label>
         <div class="grid grid-cols-3 gap-2 mt-2">
-          <button type="button" data-payer="a" class="payer-btn py-2 rounded-lg text-sm font-semibold border-2" style="border-color:var(--line);color:var(--ink)">COT</button>
-          <button type="button" data-payer="b" class="payer-btn py-2 rounded-lg text-sm font-semibold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
-          <button type="button" data-payer="c" class="payer-btn py-2 rounded-lg text-sm font-semibold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
+          <button type="button" data-payer="a" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">COT</button>
+          <button type="button" data-payer="b" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
+          <button type="button" data-payer="c" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
         </div>
       </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <div class="flex items-center gap-3">
-          <label for="outReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-            📷 แนบรูปใบเสร็จ (ถ่ายรูป/เลือกจากคลัง)
-          </label>
-          <input id="outReceiptInput" type="file" accept="image/*" multiple class="hidden">
-          <span id="outReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
-        </div>
+      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+        <label for="outReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+          📷 แนบรูปใบเสร็จ
+        </label>
+        <input id="outReceiptInput" type="file" accept="image/*" multiple class="hidden">
+        <p id="outReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
         <div id="outReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
-      <button id="outAddBtn" class="w-full mt-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--red)">− บันทึกรายจ่าย</button>
+      <button id="outAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--red)">− บันทึกรายจ่าย</button>
     </section>
 
     <!-- payer ratio chart -->
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <div class="flex items-baseline justify-between mb-1">
-        <p class="text-xs mono uppercase tracking-wide" style="color:#8b7ca8">สัดส่วนรายจ่ายกองกลางตามผู้จ่ายจริง (สำหรับออกใบกำกับภาษี)</p>
-      </div>
-      <p class="text-xs mb-4" style="color:#a898c4">เส้นมาตรฐาน = สัดส่วนเป้าหมาย 47:32:21 · แท่งสี = สัดส่วนที่จ่ายจริงสะสมของแต่ละบริษัท</p>
+    <section class="card p-4">
+      <p class="text-sm font-bold" style="color:var(--ink)">สัดส่วนรายจ่ายตามผู้จ่ายจริง</p>
+      <p class="text-xs mt-1 mb-4" style="color:var(--ink-faint)">เส้นดำ = เป้าหมาย 47:32:21 · แท่งสี = จ่ายจริงสะสม</p>
       <div id="payerChart" class="space-y-4"></div>
-      <p id="payerChartEmpty" class="text-sm text-center py-4" style="color:#a898c4">ยังไม่มีรายจ่ายที่ระบุผู้จ่าย</p>
+      <p id="payerChartEmpty" class="text-sm text-center py-4" style="color:var(--ink-faint)">ยังไม่มีรายจ่ายที่ระบุผู้จ่าย</p>
     </section>
 
     <!-- history -->
-    <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
-        <div class="w-14">ประเภท</div>
-        <div class="flex-1">รายการ</div>
-        <div class="w-28 hide-mobile">สถานที่</div>
-        <div class="w-16 text-right hide-mobile">ใบเสร็จ</div>
-        <div class="w-24 text-right">จำนวนเงิน</div>
-        <div class="w-24 text-right hide-mobile">คงเหลือ</div>
-        <div class="w-8"></div>
-      </div>
+    <section class="card overflow-hidden">
+      <div class="px-4 py-3 border-b text-sm font-bold" style="border-color:var(--line-soft);color:var(--ink)">รายการเข้า-ออก</div>
       <div id="fundHistory"></div>
-      <div id="fundEmpty" class="px-4 py-10 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการเข้า-ออก</div>
+      <div id="fundEmpty" class="px-4 py-12 text-center text-sm" style="color:var(--ink-faint)">ยังไม่มีรายการเข้า-ออก</div>
     </section>
 
-    <section class="mt-6 rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="px-4 py-2.5 border-b text-xs mono uppercase tracking-wide" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">สรุปรายจ่ายกองกลางแยกตามสถานที่ลงพื้นที่</div>
+    <!-- site summary -->
+    <section class="card overflow-hidden">
+      <div class="px-4 py-3 border-b text-sm font-bold" style="border-color:var(--line-soft);color:var(--ink)">สรุปรายจ่ายตามสถานที่ลงพื้นที่</div>
       <div id="fundSiteSummary"></div>
-      <div id="fundSiteSummaryEmpty" class="px-4 py-6 text-center text-sm" style="color:#a898c4">ยังไม่มีรายจ่ายที่ระบุสถานที่</div>
+      <div id="fundSiteSummaryEmpty" class="px-4 py-8 text-center text-sm" style="color:var(--ink-faint)">ยังไม่มีรายจ่ายที่ระบุสถานที่</div>
     </section>
   </div>
 
-  <p id="saveStatus" class="text-xs mono text-center mt-6" style="color:#a898c4">&nbsp;</p>
+  <!-- hidden company labels (kept for script compatibility) -->
+  <div class="hidden">
+    <span id="labelA"></span><span id="labelB"></span><span id="labelC"></span>
+  </div>
+
+  <p id="saveStatus" class="text-xs mono text-center mt-6 leading-relaxed px-2" style="color:var(--ink-faint)">&nbsp;</p>
 </div>
 
 <!-- popup confirming save success or failure -->
 <div id="toastOverlay" class="fixed inset-0 flex items-center justify-center px-6"
-     style="z-index:60;background:rgba(76,59,107,0.35);opacity:0;pointer-events:none;transition:opacity .2s ease;">
+     style="z-index:60;background:rgba(31,36,64,0.35);opacity:0;pointer-events:none;transition:opacity .2s ease;">
   <div id="toastBox" class="rounded-2xl px-6 py-6 text-center shadow-2xl" style="background:#fff;max-width:320px;width:100%;transform:scale(0.9);transition:transform .2s ease;border-top:4px solid var(--green)">
     <div id="toastIcon" class="text-4xl mb-2">✅</div>
     <div id="toastMsg" class="text-base font-semibold" style="color:var(--ink)"></div>
@@ -385,11 +393,11 @@ function setTab(tab){
   const fundBtn = document.getElementById('tabFundBtn');
   const isCot = tab === 'cot';
   cotBtn.style.borderColor = isCot ? 'var(--teal)' : 'var(--line)';
-  cotBtn.style.background = isCot ? 'var(--teal-bg)' : 'var(--card)';
-  cotBtn.style.color = isCot ? 'var(--teal-dark)' : 'var(--ink)';
+  cotBtn.style.background = isCot ? 'var(--teal)' : 'var(--card)';
+  cotBtn.style.color = isCot ? '#fff' : 'var(--ink-soft)';
   fundBtn.style.borderColor = !isCot ? 'var(--teal)' : 'var(--line)';
-  fundBtn.style.background = !isCot ? 'var(--teal-bg)' : 'var(--card)';
-  fundBtn.style.color = !isCot ? 'var(--teal-dark)' : 'var(--ink)';
+  fundBtn.style.background = !isCot ? 'var(--teal)' : 'var(--card)';
+  fundBtn.style.color = !isCot ? '#fff' : 'var(--ink-soft)';
   document.getElementById('panelCot').style.display = isCot ? 'block' : 'none';
   document.getElementById('panelFund').style.display = isCot ? 'none' : 'block';
 }
@@ -415,8 +423,8 @@ function calcPayerTotals(){
   return { totals, total };
 }
 
-const PAYER_COLOR = { a: 'var(--teal)', b: '#60a5fa', c: 'var(--amber)' };
-const PAYER_BG = { a: 'var(--teal-bg)', b: '#dbeafe', c: 'var(--amber-bg)' };
+const PAYER_COLOR = { a: 'var(--teal)', b: 'var(--blue)', c: 'var(--amber)' };
+const PAYER_BG = { a: 'var(--teal-bg)', b: 'var(--blue-bg)', c: 'var(--amber-bg)' };
 
 function renderPayerChart(){
   const { totals, total } = calcPayerTotals();
@@ -441,15 +449,15 @@ function renderPayerChart(){
     const diffColor = diff > 0.05 ? 'var(--red)' : (diff < -0.05 ? 'var(--green)' : 'var(--ink)');
     return `
       <div>
-        <div class="flex items-baseline justify-between text-xs mono mb-1">
-          <span class="font-semibold" style="color:var(--ink)">${companyNames[key]}</span>
-          <span style="color:#8b7ca8">${fmt(totals[key])} บาท · ${actualPct.toFixed(1)}% <span style="color:${diffColor}">(${diffLabel})</span></span>
+        <div class="flex items-baseline justify-between text-xs mono mb-1.5">
+          <span class="font-bold text-sm" style="color:var(--ink)">${companyNames[key]}</span>
+          <span style="color:var(--ink-soft)">${fmt(totals[key])} · ${actualPct.toFixed(1)}% <span style="color:${diffColor}">(${diffLabel})</span></span>
         </div>
         <div class="relative w-full rounded-full" style="height:14px;background:${PAYER_BG[key]}">
           <div class="absolute top-0 left-0 h-full rounded-full" style="width:${barWidth}%;background:${PAYER_COLOR[key]};transition:width .4s ease"></div>
           <div class="absolute top-0 bottom-0" style="left:${targetPct}%;width:2px;background:var(--ink);opacity:0.55"></div>
         </div>
-        <div class="relative text-xs mono mt-0.5" style="height:14px;color:#a898c4">
+        <div class="relative text-[11px] mono mt-0.5" style="height:14px;color:var(--ink-faint)">
           <span class="absolute" style="left:${targetPct}%;transform:translateX(-50%)">เป้า ${targetPct}%</span>
         </div>
       </div>
@@ -457,13 +465,44 @@ function renderPayerChart(){
   }).join('');
 }
 
-function receiptCellHtml(receiptUrls){
-  if(!receiptUrls || receiptUrls.length === 0){
-    return `<span class="text-xs" style="color:#e5defa">—</span>`;
-  }
+function receiptChipsHtml(receiptUrls){
+  if(!receiptUrls || receiptUrls.length === 0) return '';
   return receiptUrls.map((u, i) =>
-    `<a href="${u}" target="_blank" class="text-xs" title="เปิดใบเสร็จ ${i+1}">🧾${receiptUrls.length > 1 ? (i+1) : ''}</a>`
+    `<a href="${u}" target="_blank" class="inline-flex items-center gap-0.5" style="color:var(--teal-dark)" title="เปิดใบเสร็จ ${i+1}">🧾${receiptUrls.length > 1 ? (i+1) : ''}</a>`
   ).join(' ');
+}
+
+// build a mobile-friendly transaction card row
+function buildRow(it, running, isIn, payerBadge){
+  const row = document.createElement('div');
+  row.className = 'px-4 py-3 border-b';
+  row.style.borderColor = 'var(--line-soft)';
+  const badge = isIn
+    ? `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:var(--green-bg);color:var(--green)">เข้า</span>`
+    : `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:var(--red-bg);color:var(--red)">ออก</span>`;
+  const amountColor = isIn ? 'var(--green)' : 'var(--red)';
+  const amountSign = isIn ? '+' : '−';
+  const receiptChips = receiptChipsHtml(it.receiptUrls);
+  const metaParts = [];
+  if(it.site) metaParts.push(`<span>📍 ${it.site}</span>`);
+  if(receiptChips) metaParts.push(receiptChips);
+  metaParts.push(`<span>คงเหลือ <span class="mono">${fmt(running)}</span></span>`);
+  row.innerHTML = `
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center flex-wrap gap-1.5 mb-1">${badge}${payerBadge}</div>
+        <p class="font-semibold leading-snug break-words" style="color:var(--ink)">${it.name}</p>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs" style="color:var(--ink-soft)">
+          ${metaParts.join('')}
+        </div>
+      </div>
+      <div class="text-right shrink-0 flex flex-col items-end">
+        <p class="mono font-bold text-base whitespace-nowrap" style="color:${amountColor}">${amountSign}${fmt(it.amount)}</p>
+        <button data-id="${it.id}" class="del-btn mt-2 text-xs font-medium px-2 py-1 rounded-lg" style="background:var(--red-bg);color:var(--red)">ลบ</button>
+      </div>
+    </div>
+  `;
+  return row;
 }
 
 function renderCot(){
@@ -484,28 +523,7 @@ function renderCot(){
     items.forEach(it => {
       const isIn = it.category === 'cot-in';
       running += isIn ? it.amount : -it.amount;
-      const row = document.createElement('div');
-      row.className = 'flex items-center px-4 py-3 border-b text-sm';
-      row.style.borderColor = 'var(--line)';
-      const badge = isIn
-        ? `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--green-bg);color:var(--green)">เข้า</span>`
-        : `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--red-bg);color:var(--red)">ออก</span>`;
-      const receiptCell = receiptCellHtml(it.receiptUrls);
-      const siteCell = it.site
-        ? `<span class="text-xs" style="color:#7c6a9c">${it.site}</span>`
-        : `<span class="text-xs" style="color:#e5defa">—</span>`;
-      const amountColor = isIn ? 'var(--green)' : 'var(--red)';
-      const amountSign = isIn ? '+' : '−';
-      row.innerHTML = `
-        <div class="w-14">${badge}</div>
-        <div class="flex-1 truncate pr-2">${it.name}</div>
-        <div class="w-28 truncate pr-2 hide-mobile">${siteCell}</div>
-        <div class="w-16 text-right hide-mobile">${receiptCell}</div>
-        <div class="w-24 text-right mono" style="color:${amountColor}">${amountSign}${fmt(it.amount)}</div>
-        <div class="w-24 text-right mono hide-mobile" style="color:#8b7ca8">${fmt(running)}</div>
-        <div class="w-8 text-right"><button data-id="${it.id}" class="del-btn text-xs" style="color:var(--red)">✕</button></div>
-      `;
-      list.appendChild(row);
+      list.appendChild(buildRow(it, running, isIn, ''));
     });
     list.querySelectorAll('.del-btn').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -529,11 +547,11 @@ function renderSiteSummary(items, listId, emptyId){
     .sort((a,b) => totals[b] - totals[a])
     .forEach(site => {
       const row = document.createElement('div');
-      row.className = 'flex items-center px-4 py-2.5 border-b text-sm';
-      row.style.borderColor = 'var(--line)';
+      row.className = 'flex items-center gap-3 px-4 py-3 border-b text-sm';
+      row.style.borderColor = 'var(--line-soft)';
       row.innerHTML = `
-        <div class="flex-1 truncate pr-2">${site}</div>
-        <div class="text-right mono" style="color:var(--teal-dark)">${fmt(totals[site])}</div>
+        <div class="flex-1 break-words pr-1" style="color:var(--ink)">${site}</div>
+        <div class="text-right mono font-semibold whitespace-nowrap" style="color:var(--teal-dark)">${fmt(totals[site])}</div>
       `;
       list.appendChild(row);
     });
@@ -552,42 +570,21 @@ function renderFund(){
   list.innerHTML = '';
   if(items.length === 0){ empty.style.display = 'block'; }
   else{
-  empty.style.display = 'none';
-  let running = 0;
-  items.forEach(it => {
-    running += it.category === 'fund-in' ? it.amount : -it.amount;
-    const row = document.createElement('div');
-    row.className = 'flex items-center px-4 py-3 border-b text-sm';
-    row.style.borderColor = 'var(--line)';
-    const isIn = it.category === 'fund-in';
-    const badge = isIn
-      ? `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--green-bg);color:var(--green)">เข้า</span>`
-      : `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--red-bg);color:var(--red)">ออก</span>`;
-    const receiptCell = receiptCellHtml(it.receiptUrls);
-    const siteCell = it.site
-      ? `<span class="text-xs" style="color:#7c6a9c">${it.site}</span>`
-      : `<span class="text-xs" style="color:#e5defa">—</span>`;
-    const amountColor = isIn ? 'var(--green)' : 'var(--red)';
-    const amountSign = isIn ? '+' : '−';
-    const payerBadge = (!isIn && it.payer)
-      ? `<span class="text-xs font-semibold mr-1.5 px-1.5 py-0.5 rounded" style="background:${PAYER_BG[it.payer]};color:var(--ink)">${companyNames[it.payer]}</span>`
-      : '';
-    row.innerHTML = `
-      <div class="w-14">${badge}</div>
-      <div class="flex-1 truncate pr-2">${payerBadge}${it.name}</div>
-      <div class="w-28 truncate pr-2 hide-mobile">${siteCell}</div>
-      <div class="w-16 text-right hide-mobile">${receiptCell}</div>
-      <div class="w-24 text-right mono" style="color:${amountColor}">${amountSign}${fmt(it.amount)}</div>
-      <div class="w-24 text-right mono hide-mobile" style="color:#8b7ca8">${fmt(running)}</div>
-      <div class="w-8 text-right"><button data-id="${it.id}" class="del-btn text-xs" style="color:var(--red)">✕</button></div>
-    `;
-    list.appendChild(row);
-  });
-  list.querySelectorAll('.del-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      deleteFromSheet(e.currentTarget.dataset.id);
+    empty.style.display = 'none';
+    let running = 0;
+    items.forEach(it => {
+      const isIn = it.category === 'fund-in';
+      running += isIn ? it.amount : -it.amount;
+      const payerBadge = (!isIn && it.payer)
+        ? `<span class="text-[11px] font-bold px-1.5 py-0.5 rounded" style="background:${PAYER_BG[it.payer]};color:var(--ink)">${companyNames[it.payer]}</span>`
+        : '';
+      list.appendChild(buildRow(it, running, isIn, payerBadge));
     });
-  });
+    list.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        deleteFromSheet(e.currentTarget.dataset.id);
+      });
+    });
   }
   renderSiteSummary(records.filter(r => r.category === 'fund-out'), 'fundSiteSummary', 'fundSiteSummaryEmpty');
   renderPayerChart();
@@ -598,8 +595,6 @@ function renderAll(){
   renderCot();
   renderFund();
 }
-
-
 
 // map a Sheet row (from doGet) back into our internal record shape
 function rowToRecord(r){
@@ -621,7 +616,7 @@ async function loadFromSheet(){
     const data = await res.json();
     if(data.success){
       records = (data.items || []).map(rowToRecord).sort((a,b) => a.ts - b.ts);
-      status.textContent = 'โหลดข้อมูลจาก Google Sheets สำเร็จ · ข้อมูลนี้ใช้ร่วมกันทุกคนที่เปิดลิงก์นี้';
+      status.textContent = 'โหลดข้อมูลสำเร็จ · ข้อมูลนี้ใช้ร่วมกันทุกคนที่เปิดลิงก์นี้';
     } else {
       status.textContent = 'โหลดข้อมูลไม่สำเร็จ: ' + (data.error || 'unknown error');
     }
@@ -673,6 +668,7 @@ async function syncToSheet(record){
 }
 
 async function deleteFromSheet(id){
+  if(!confirm('ต้องการลบรายการนี้หรือไม่?')) return;
   const status = document.getElementById('saveStatus');
   const backup = records;
   records = records.filter(r => r.id !== id); // optimistic remove
@@ -721,7 +717,7 @@ function renderReceiptPreview(nameId, previewId, key){
   label.textContent = items.length ? `แนบแล้ว ${items.length} รูป` : 'ยังไม่ได้แนบรูป';
   wrap.innerHTML = items.map((it, idx) => `
     <div class="relative">
-      <img src="${it.dataUrl}" class="w-14 h-14 object-cover rounded-lg border" style="border-color:var(--line)">
+      <img src="${it.dataUrl}" class="w-16 h-16 object-cover rounded-xl border" style="border-color:var(--line)">
       <button type="button" data-key="${key}" data-idx="${idx}" data-name="${nameId}" data-preview="${previewId}"
         class="remove-receipt-btn absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center" style="background:var(--red)">×</button>
     </div>
@@ -754,8 +750,8 @@ document.getElementById('cotAddBtn').addEventListener('click', () => {
   const name = nameInput.value.trim();
   const amount = parseFloat(amountInput.value);
   if(!name || isNaN(amount) || amount <= 0){
-    nameInput.style.borderBottomColor = !name ? 'var(--red)' : 'var(--line)';
-    amountInput.style.borderBottomColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
+    nameInput.style.borderColor = !name ? 'var(--red)' : 'var(--line)';
+    amountInput.style.borderColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
     return;
   }
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -764,7 +760,7 @@ document.getElementById('cotAddBtn').addEventListener('click', () => {
                 receiptBase64List: pendingReceipt.cot.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
   records.push(rec);
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
-  nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
+  nameInput.style.borderColor='var(--line)'; amountInput.style.borderColor='var(--line)';
   resetReceipt('cotReceiptInput','cotReceiptName','cotReceiptPreview','cot');
   renderAll(); syncToSheet(rec);
 });
@@ -775,7 +771,7 @@ document.getElementById('cotInAddBtn').addEventListener('click', () => {
   const amountInput = document.getElementById('cotInAmount');
   const amount = parseFloat(amountInput.value);
   if(isNaN(amount) || amount <= 0){
-    amountInput.style.borderBottomColor = 'var(--red)';
+    amountInput.style.borderColor = 'var(--red)';
     return;
   }
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -784,7 +780,7 @@ document.getElementById('cotInAddBtn').addEventListener('click', () => {
                 receiptBase64List: pendingReceipt.cotIn.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
   records.push(rec);
   noteInput.value=''; amountInput.value='';
-  amountInput.style.borderBottomColor='var(--line)';
+  amountInput.style.borderColor='var(--line)';
   resetReceipt('cotInReceiptInput','cotInReceiptName','cotInReceiptPreview','cotIn');
   renderAll(); syncToSheet(rec);
 });
@@ -803,7 +799,7 @@ document.getElementById('inAddBtn').addEventListener('click', () => {
   const amountInput = document.getElementById('inAmount');
   const amount = parseFloat(amountInput.value);
   if(isNaN(amount) || amount <= 0){
-    amountInput.style.borderBottomColor = 'var(--red)';
+    amountInput.style.borderColor = 'var(--red)';
     return;
   }
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -813,7 +809,7 @@ document.getElementById('inAddBtn').addEventListener('click', () => {
                 receiptBase64List: pendingReceipt.in.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
   records.push(rec);
   noteInput.value=''; amountInput.value='';
-  amountInput.style.borderBottomColor='var(--line)';
+  amountInput.style.borderColor='var(--line)';
   document.getElementById('inBreakdown').textContent = '';
   resetReceipt('inReceiptInput','inReceiptName','inReceiptPreview','in');
   renderAll(); syncToSheet(rec);
@@ -842,13 +838,14 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
   const payerWrap = document.getElementById('payerPickerWrap');
   let ok = true;
   if(!name || isNaN(amount) || amount <= 0){
-    nameInput.style.borderBottomColor = !name ? 'var(--red)' : 'var(--line)';
-    amountInput.style.borderBottomColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
+    nameInput.style.borderColor = !name ? 'var(--red)' : 'var(--line)';
+    amountInput.style.borderColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
     ok = false;
   }
   if(!pendingPayer){
     payerWrap.style.outline = '2px solid var(--red)';
-    payerWrap.style.borderRadius = '10px';
+    payerWrap.style.borderRadius = '12px';
+    payerWrap.style.outlineOffset = '4px';
     ok = false;
   }
   if(!ok) return;
@@ -858,7 +855,7 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
                 receiptBase64List: pendingReceipt.out.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
   records.push(rec);
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
-  nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
+  nameInput.style.borderColor='var(--line)'; amountInput.style.borderColor='var(--line)';
   payerWrap.style.outline = 'none';
   pendingPayer = null;
   document.querySelectorAll('.payer-btn').forEach(b => {
@@ -866,31 +863,6 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
   });
   resetReceipt('outReceiptInput','outReceiptName','outReceiptPreview','out');
   renderAll(); syncToSheet(rec);
-});
-
-// ---- company names (kept per-browser only; not synced to the sheet) ----
-// company names are fixed (not editable in the UI)
-
-document.getElementById('resetBtn').addEventListener('click', async () => {
-  if(!confirm('ต้องการล้างรายการทั้งหมดหรือไม่? (จะลบข้อมูลใน Google Sheets ด้วย และกู้คืนไม่ได้)')) return;
-  const status = document.getElementById('saveStatus');
-  const backup = records;
-  records = [];
-  renderAll();
-  if(!webAppUrl) return;
-  try{
-    status.textContent = 'กำลังล้างข้อมูลใน Google Sheets...';
-    const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'clearAll' }) });
-    const data = await res.json();
-    status.textContent = data.success ? 'ล้างข้อมูลแล้ว' : 'ล้างไม่สำเร็จ: ' + (data.error || 'unknown error');
-    if(data.success){ showToast('ล้างข้อมูลทั้งหมดแล้ว', false); }
-    else{ showToast('ล้างไม่สำเร็จ: ' + (data.error || 'unknown error'), true); records = backup; renderAll(); }
-  }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ล้างข้อมูล)';
-    showToast('เชื่อมต่อ Google Sheets ไม่สำเร็จ (ล้างข้อมูล)', true);
-    records = backup; renderAll();
-    console.error(e);
-  }
 });
 
 loadFromSheet();
