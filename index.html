@@ -1,8 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="th">
-<head><script>window.__V0_SANDBOX_ID__="sb-2b42ylsy8n0e";window.__V0_CHAT_ID__="cyRuCQcDo5B";(function v_(){try{if(!/\bFirefox\//.test(navigator.userAgent)||"u"<typeof PerformanceNavigationTiming)return;let e=Object.getOwnPropertyDescriptor(PerformanceResourceTiming.prototype,"transferSize");if(!e||!e.get)return;let t=e.get;Object.defineProperty(PerformanceNavigationTiming.prototype,"transferSize",{configurable:!0,get(){let e=t.call(this);if(0!==e||"back_forward"===this.type)return e;let r=window.next,n=r&&"string"==typeof r.version?r.version:"",i=/^16\.2\.(\d+)/.exec(n);return i&&Number(i[1])>=7?1:e}})}catch{}})();window.__V0_SOURCE_MAP_FRAME_ROOT__="file:///vercel/share/v0-project/.next/dev/static";;(function vw(e){let t=Symbol.for("__next_dev_bridge_runtime_observer__"),r=window[t],n=e||{},i=n.messageType||"next-dev-bridge:runtime",a=n.readyMessageType||"next-dev-bridge:runtime-ready",o=n.resetMessageType||"next-dev-bridge:runtime-reset",s=n.targetOrigin||"*",l=!1!==n.isAppDirectory,c="string"==typeof n.sourceMapEndpoint&&n.sourceMapEndpoint?n.sourceMapEndpoint:"",u="string"==typeof n.sourceMapFrameRoot&&n.sourceMapFrameRoot?n.sourceMapFrameRoot.replace(/\/+$/,""):"";if(r)return void f(a,{existing:!0,href:window.location.href,windowId:r.windowId});let d=1,p=`${Date.now()}-${Math.random().toString(36).slice(2)}`,h={errors:[]};function f(e,t){window.parent!==window&&window.parent.postMessage({type:e,...t},s)}async function m(e){let t={...e,id:d++,severity:"recoverable",at:new Date().toISOString()};h.errors=[...h.errors,t],f(i,{event:{type:"runtime:error",error:t,errors:h.errors},state:h,href:window.location.href,windowId:p}),c&&_(t).then(e=>{h.errors.some(e=>e.id===t.id)&&(t.mapped=e,h.errors=h.errors.map(e=>e.id===t.id?t:e),f(i,{event:{type:"runtime:error",error:t,errors:h.errors},state:h,href:window.location.href,windowId:p}))}).catch(()=>{})}function g(){0!==h.errors.length&&(h.errors=[],f(i,{event:{type:"runtime:cleared",errors:[]},state:h,href:window.location.href,windowId:p}))}function y(e){var t,r,n,i,a;let o,s,l,c;m((o=w((t=e).error,t.message||"Uncaught error"),s=t.filename||void 0,l=D(t.lineno),c=D(t.colno),{source:"error",name:o.name,message:o.message,stack:o.stack||(r=o.message,n=s,i=l,a=c,n&&i&&a?`${r}
-    at <anonymous> (${n}:${i}:${a})`:""),filename:s,line:l,column:c}))}function v(e){let t;m({source:"unhandledrejection",name:(t=w(e.reason,"Unhandled promise rejection")).name,message:t.message,stack:t.stack})}function b(e){let t=e.data;t&&"object"==typeof t&&t.type===o&&g()}function w(e,t){return e instanceof Error?{name:e.name||"Error",message:e.message||t,stack:e.stack||""}:e&&"object"==typeof e?{name:"string"==typeof e.name?e.name:"Error",message:"string"==typeof e.message?e.message:function(e){try{return JSON.stringify(e)}catch{return""}}(e)||t,stack:"string"==typeof e.stack?e.stack:""}:{name:"Error",message:"string"==typeof e?e:null==e?t:String(e),stack:""}}async function _(e){var t,r;let n=(t=String(e.stack).split("\n").map(j).filter(Boolean),r=e.filename,t.map(e=>({...e,file:function(e,t){var r,n;if("string"!=typeof e||0===e.length)return;let i=C(e);if(i)return I(i);if(r=e,/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(r))return e;if(t&&N(t)===N(e)){let e=C(t);return e?I(e):t}let a=e.startsWith("_next/")?`/${e}`:e;return a.startsWith("/_next/")?I(a):!(n=a).includes("/")&&n.endsWith(".js")&&(n.startsWith("_")||n.includes("._.")||n.startsWith("node_modules_")||n.startsWith("turbopack-"))?I(`/_next/static/chunks/${a}`):e}(e.file,r)})));return{message:e.message,stack:e.stack,frames:n,mappedFrames:n.length>0?await x(n):[]}}async function x(e){let t=function(e){let t=[],r=new Set;for(let n of(k(t,r,e),[O,A,P])){let i=function(e,t){let r=!1,n=e.map(e=>{if("string"!=typeof e.file)return e;let n=t(e.file);return n&&n!==e.file?(r=!0,{...e,file:n}):e});return r?n:null}(e,n);i&&k(t,r,i)}return t}(e),r=null;for(let n of t){let t=await S(n);if(function(e){for(let n of e){var t,r;let e=U(t=n)&&"fulfilled"===t.status&&U(t.value)&&U(t.value.originalStackFrame)?t.value.originalStackFrame:null;if(!e||!0===e.ignored)continue;let i="string"!=typeof(r=e.file)?"":r.trim();if(!(!i||function(e){let t=R(e);return/\/(?:_next\/static|\.next\/dev\/static)\/chunks\//.test(t)||t.includes("/next/dist/compiled/")}(i)))return!0}return!1}(t.mappedFrames))return E(e,t.mappedFrames);if(r=t.mappedFrames,!t.shouldTryNextVariant)break}return r??$(e,"No stack frames to map.")}async function S(e){try{let t=function(e){try{return new URL(e,window.location.href).origin!==window.location.origin}catch{return!1}}(c),r={body:JSON.stringify({frames:e,isServer:!1,isEdgeServer:!1,isAppDirectory:l,sourceOrigin:window.location.origin}),cache:"no-store",credentials:t?"omit":"same-origin",method:"POST",mode:t?"cors":"same-origin"};t||(r.headers={"content-type":"application/json"});let n=await fetch(c,{...r});if(!n.ok||204===n.status){let t=await n.text().catch(()=>"");return{mappedFrames:$(e,t||"No original stack frame response from Next dev server."),shouldTryNextVariant:!1}}let i=await n.json();if(!Array.isArray(i))return{mappedFrames:$(e,"Invalid original stack frame response from Next dev server."),shouldTryNextVariant:!1};return{mappedFrames:E(e,i),shouldTryNextVariant:!0}}catch(t){return{mappedFrames:$(e,t instanceof Error?t.message:String(t)),shouldTryNextVariant:!1}}}function E(e,t){return e.map((e,r)=>t[r]||{status:"rejected",reason:"No original stack frame response for frame."})}function $(e,t){return e.map(()=>({status:"rejected",reason:t}))}function k(e,t,r){let n=JSON.stringify(r.map(e=>e.file));t.has(n)||(t.add(n),e.push(r))}function I(e){return u?`${u}/${e.replace(/^\/_next\/static\/?/,"")}`:e}function O(e){let t=T(e);return t?`.next/dev/static/${t.replace(/^\/_next\/static\/?/,"")}`:null}function A(e){let t=T(e);return t?t.replace(/^\/+/,""):null}function P(e){let t=T(e);if(!t)return null;try{return new URL(t,window.location.origin).href}catch{return null}}function T(e){var t,r;let n,i=R(e);if(i.startsWith("/_next/static/"))return i;let a=(r="/.next/dev/static/",-1===(n=(t=i).indexOf(r))?"":t.slice(n+r.length));return a?`/_next/static/${a}`:""}function C(e){if(e.startsWith("/_next/"))return e;if(e.startsWith("_next/"))return`/${e}`;try{let t=new URL(e);return t.pathname.startsWith("/_next/")?t.pathname:""}catch{return""}}function R(e){try{return new URL(e).pathname}catch{}return e.startsWith("/")?e:`/${e}`}function N(e){return e.split("?")[0].split(/[\\/]/).pop()||e}function U(e){return"object"==typeof e&&null!==e}function j(e){let t=e.trim();if(!t.startsWith("at "))return null;let r=t.slice(3),n="<anonymous>",i=r,a=r.indexOf("("),o=r.endsWith(")")?r.length-1:-1;-1!==a&&-1!==o&&o>a&&(n=r.slice(0,a).trim()||"<anonymous>",i=r.slice(a+1,o));let s=/^(.*):(\d+):(\d+)$/.exec(i);return s?{file:s[1],methodName:n,arguments:[],line1:Number(s[2]),column1:Number(s[3])}:null}function D(e){return"number"==typeof e&&Number.isFinite(e)&&e>0?e:void 0}window.addEventListener("error",y),window.addEventListener("unhandledrejection",v),window.addEventListener("message",b),window[t]={windowId:p,getSnapshot:()=>({errors:h.errors.slice()}),reset:g,stop:function(){window.removeEventListener("error",y),window.removeEventListener("unhandledrejection",v),window.removeEventListener("message",b),delete window[t]}},f(a,{existing:!1,href:window.location.href,windowId:p})})({"messageType":"next-dev-bridge:event","sourceMapEndpoint":"/_v0/next-dev-bridge-stack-frames","sourceMapFrameRoot":"file:///vercel/share/v0-project/.next/dev/static"});</script><script async src="/v0-runtime-dist.js"></script><style>nextjs-portal{display: none !important}</style>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0d9488">
@@ -83,7 +81,7 @@
 <div class="max-w-md mx-auto px-4 pb-16">
 
   <!-- Sticky header + tabs -->
- <div class="sticky-top">
+  <div class="sticky-top">
     <header class="pt-6 pb-4">
       <h1 class="text-2xl font-bold" style="color:var(--ink)">ระบบเงินโครงการ</h1>
     </header>
@@ -94,7 +92,6 @@
         <span id="tabCotLabel">COT จ่ายเอง</span>
       </button>
       <button id="tabFundBtn" class="tab-btn py-2.5 px-2 rounded-xl text-sm font-bold border-2 text-center">
-        กองกลาง
         Common fund
       </button>
     </div>
@@ -119,47 +116,55 @@
       </div>
     </section>
 
-    <!-- money in -->
+    <!-- combined entry (in / out) -->
     <section class="card p-4">
-      <p class="text-sm font-bold mb-1" style="color:var(--ink)">บันทึกเงินเข้า <span id="cotInLabel">COT</span></p>
-      <p class="text-xs mb-3" style="color:var(--ink-faint)">เงิน Advance ที่บริษัทโอนเข้ามา</p>
-      <div class="space-y-3">
-        <input id="cotInNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น เงินทดรองรอบที่ 1">
-        <input id="cotInAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
+      <!-- mode toggle -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl mb-4" style="background:var(--line-soft)">
+        <button id="cotModeInBtn" type="button" class="entry-seg btn py-2 rounded-lg text-sm font-bold">เงินเข้า</button>
+        <button id="cotModeOutBtn" type="button" class="entry-seg btn py-2 rounded-lg text-sm font-bold">จ่ายเอง</button>
       </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
-        <label for="cotInReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 แนบรูปหลักฐานการรับเงิน
-        </label>
-        <input id="cotInReceiptInput" type="file" accept="image/*" multiple class="hidden">
-        <p id="cotInReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
-        <div id="cotInReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
-      </div>
-      <button id="cotInAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
-    </section>
 
-    <!-- add expense -->
-    <section class="card p-4">
-      <p class="text-sm font-bold mb-3" style="color:var(--ink)">เพิ่มรายการที่ <span id="cotAddLabel">COT</span> จ่ายเอง</p>
-      <div class="space-y-3">
-        <input id="cotItemName" type="text" placeholder="เช่น ค่าน้ำมันรถ COT">
-        <input id="cotItemAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
-        <div>
-          <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-          <select id="cotItemSite" class="mt-1.5">
-            <option value="">— ไม่ระบุสถานที่ —</option>
-          </select>
+      <!-- money in body -->
+      <div id="cotInForm">
+        <p class="text-xs mb-3" style="color:var(--ink-faint)">เงิน Advance ที่ <span id="cotInLabel">COT</span> ได้รับโอนเข้ามา</p>
+        <div class="space-y-3">
+          <input id="cotInNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น เงินทดรองรอบที่ 1">
+          <input id="cotInAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
         </div>
+        <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+          <label for="cotInReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+            📷 แนบรูปหลักฐานการรับเงิน
+          </label>
+          <input id="cotInReceiptInput" type="file" accept="image/*" multiple class="hidden">
+          <p id="cotInReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
+          <div id="cotInReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
+        <button id="cotInAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
       </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
-        <label for="cotReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 แนบรูปใบเสร็จ
-        </label>
-        <input id="cotReceiptInput" type="file" accept="image/*" multiple class="hidden">
-        <p id="cotReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
-        <div id="cotReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+
+      <!-- expense body -->
+      <div id="cotOutForm">
+        <p class="text-xs mb-3" style="color:var(--ink-faint)">รายการที่ <span id="cotAddLabel">COT</span> จ่ายเอง</p>
+        <div class="space-y-3">
+          <input id="cotItemName" type="text" placeholder="เช่น ค่าน้ำมันรถ COT">
+          <input id="cotItemAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
+          <div>
+            <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
+            <select id="cotItemSite" class="mt-1.5">
+              <option value="">— ไม่ระบุสถานที่ —</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+          <label for="cotReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+            📷 แนบรูปใบเสร็จ
+          </label>
+          <input id="cotReceiptInput" type="file" accept="image/*" multiple class="hidden">
+          <p id="cotReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
+          <div id="cotReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
+        <button id="cotAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--teal)">+ เพิ่มรายการ</button>
       </div>
-      <button id="cotAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--teal)">+ เพิ่มรายการ</button>
     </section>
 
     <!-- history -->
@@ -210,56 +215,64 @@
       </div>
     </section>
 
-    <!-- money in -->
+    <!-- combined entry (in / out) -->
     <section class="card p-4">
-      <p class="text-sm font-bold mb-1" style="color:var(--ink)">เติมเงินเข้ากองกลาง</p>
-      <p class="text-xs mb-3" style="color:var(--ink-faint)">แบ่งตามสัดส่วน 47 : 32 : 21 อัตโนมัติ</p>
-      <div class="space-y-3">
-        <input id="inNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น รอบที่ 1">
-        <input id="inAmount" type="number" inputmode="decimal" placeholder="ยอดรวมที่เติม (บาท)" class="mono">
+      <!-- mode toggle -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl mb-4" style="background:var(--line-soft)">
+        <button id="fundModeInBtn" type="button" class="entry-seg btn py-2 rounded-lg text-sm font-bold">เงินเข้า</button>
+        <button id="fundModeOutBtn" type="button" class="entry-seg btn py-2 rounded-lg text-sm font-bold">รายจ่าย</button>
       </div>
-      <p id="inBreakdown" class="text-xs mono mt-2 leading-relaxed" style="color:var(--teal-dark)"></p>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
-        <label for="inReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 แนบสลิปโอนเงิน
-        </label>
-        <input id="inReceiptInput" type="file" accept="image/*" multiple class="hidden">
-        <p id="inReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
-        <div id="inReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
-      </div>
-      <button id="inAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
-    </section>
 
-    <!-- add expense -->
-    <section class="card p-4">
-      <p class="text-sm font-bold mb-3" style="color:var(--ink)">บันทึกรายจ่ายจากกองกลาง</p>
-      <div class="space-y-3">
-        <input id="outName" type="text" placeholder="เช่น ค่าที่พักลงพื้นที่">
-        <input id="outAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
-        <div>
-          <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-          <select id="outSite" class="mt-1.5">
-            <option value="">— ไม่ระบุสถานที่ —</option>
-          </select>
+      <!-- money in body -->
+      <div id="fundInForm">
+        <p class="text-xs mb-3" style="color:var(--ink-faint)">เติมเงินเข้ากองกลาง · แบ่งตามสัดส่วน 47 : 32 : 21 อัตโนมัติ</p>
+        <div class="space-y-3">
+          <input id="inNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น รอบที่ 1">
+          <input id="inAmount" type="number" inputmode="decimal" placeholder="ยอดรวมที่เติม (บาท)" class="mono">
         </div>
-      </div>
-      <div id="payerPickerWrap" class="mt-4 pt-3 border-t" style="border-color:var(--line-soft)">
-        <label class="field-label">ผู้จ่ายจริง (ออกใบกำกับภาษี) · บังคับเลือก</label>
-        <div class="grid grid-cols-3 gap-2 mt-2">
-          <button type="button" data-payer="a" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">COT</button>
-          <button type="button" data-payer="b" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
-          <button type="button" data-payer="c" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
+        <p id="inBreakdown" class="text-xs mono mt-2 leading-relaxed" style="color:var(--teal-dark)"></p>
+        <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+          <label for="inReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+            📷 แนบสลิปโอนเงิน
+          </label>
+          <input id="inReceiptInput" type="file" accept="image/*" multiple class="hidden">
+          <p id="inReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
+          <div id="inReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
         </div>
+        <button id="inAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--green)">+ บันทึกเงินเข้า</button>
       </div>
-      <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
-        <label for="outReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 แนบรูปใบเสร็จ
-        </label>
-        <input id="outReceiptInput" type="file" accept="image/*" multiple class="hidden">
-        <p id="outReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
-        <div id="outReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+
+      <!-- expense body -->
+      <div id="fundOutForm">
+        <p class="text-xs mb-3" style="color:var(--ink-faint)">บันทึกรายจ่ายจากกองกลาง</p>
+        <div class="space-y-3">
+          <input id="outName" type="text" placeholder="เช่น ค่าที่พักลงพื้นที่">
+          <input id="outAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน (บาท)" class="mono">
+          <div>
+            <label class="field-label">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
+            <select id="outSite" class="mt-1.5">
+              <option value="">— ไม่ระบุสถานที่ —</option>
+            </select>
+          </div>
+        </div>
+        <div id="payerPickerWrap" class="mt-4 pt-3 border-t" style="border-color:var(--line-soft)">
+          <label class="field-label">ผู้จ่ายจริง (ออกใบกำกับภาษี) · บังคับเลือก</label>
+          <div class="grid grid-cols-3 gap-2 mt-2">
+            <button type="button" data-payer="a" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">COT</button>
+            <button type="button" data-payer="b" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
+            <button type="button" data-payer="c" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
+          <label for="outReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
+            📷 แนบรูปใบเสร็จ
+          </label>
+          <input id="outReceiptInput" type="file" accept="image/*" multiple class="hidden">
+          <p id="outReceiptName" class="text-xs mt-2 text-center" style="color:var(--ink-faint)">ยังไม่ได้แนบรูป</p>
+          <div id="outReceiptPreview" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
+        <button id="outAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--red)">− บันทึกรายจ่าย</button>
       </div>
-      <button id="outAddBtn" class="btn w-full mt-4 py-3.5 rounded-xl text-sm font-bold text-white" style="background:var(--red)">− บันทึกรายจ่าย</button>
     </section>
 
     <!-- payer ratio chart -->
@@ -403,6 +416,36 @@ function setTab(tab){
 }
 document.getElementById('tabCotBtn').addEventListener('click', () => setTab('cot'));
 document.getElementById('tabFundBtn').addEventListener('click', () => setTab('fund'));
+
+// ---- entry mode toggle (เงินเข้า / รายจ่าย) ----
+function styleSeg(btn, active, activeColor){
+  btn.style.background = active ? activeColor : 'transparent';
+  btn.style.color = active ? '#fff' : 'var(--ink-soft)';
+  btn.style.boxShadow = active ? '0 2px 6px -2px rgba(31,36,64,.35)' : 'none';
+}
+let cotEntryMode = 'out', fundEntryMode = 'out';
+function setCotEntryMode(mode){
+  cotEntryMode = mode;
+  const isIn = mode === 'in';
+  document.getElementById('cotInForm').style.display = isIn ? 'block' : 'none';
+  document.getElementById('cotOutForm').style.display = isIn ? 'none' : 'block';
+  styleSeg(document.getElementById('cotModeInBtn'), isIn, 'var(--green)');
+  styleSeg(document.getElementById('cotModeOutBtn'), !isIn, 'var(--teal)');
+}
+function setFundEntryMode(mode){
+  fundEntryMode = mode;
+  const isIn = mode === 'in';
+  document.getElementById('fundInForm').style.display = isIn ? 'block' : 'none';
+  document.getElementById('fundOutForm').style.display = isIn ? 'none' : 'block';
+  styleSeg(document.getElementById('fundModeInBtn'), isIn, 'var(--green)');
+  styleSeg(document.getElementById('fundModeOutBtn'), !isIn, 'var(--red)');
+}
+document.getElementById('cotModeInBtn').addEventListener('click', () => setCotEntryMode('in'));
+document.getElementById('cotModeOutBtn').addEventListener('click', () => setCotEntryMode('out'));
+document.getElementById('fundModeInBtn').addEventListener('click', () => setFundEntryMode('in'));
+document.getElementById('fundModeOutBtn').addEventListener('click', () => setFundEntryMode('out'));
+setCotEntryMode('out');
+setFundEntryMode('out');
 
 function calcCotTotals(){
   const ins = records.filter(r => r.category === 'cot-in').reduce((s,r) => s + r.amount, 0);
