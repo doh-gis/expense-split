@@ -1,643 +1,237 @@
+/**
+ * ===== ตั้งค่าก่อนใช้งาน =====
+ * 1. เปิด Google Sheet ที่จะใช้เก็บข้อมูล > คัดลอก Sheet ID จาก URL
+ *    ตัวอย่าง URL: https://docs.google.com/spreadsheets/d/[SHEET_ID_ตรงนี้]/edit
+ * 2. เปิด/สร้างโฟลเดอร์ Google Drive สำหรับเก็บรูปใบเสร็จ > คัดลอก Folder ID จาก URL
+ *    ตัวอย่าง URL: https://drive.google.com/drive/folders/[FOLDER_ID_ตรงนี้]
+ * 3. วาง ID ทั้งสองด้านล่างนี้ (แทนที่ข้อความ 'ใส่ ... ตรงนี้')
+ * 4. Deploy > Manage deployments > แก้ไข (ไอคอนดินสอ) > Version: New version > Deploy
+ *    ทุกครั้งที่แก้โค้ดไฟล์นี้ ต้องทำขั้นตอนนี้ใหม่ ไม่งั้น Web App จะยังรันโค้ดเวอร์ชันเก่าอยู่
+ *    (การทำแบบนี้ URL /exec เดิมจะไม่เปลี่ยน ไม่ต้องไปแก้ webAppUrl ในหน้าเว็บ)
+ * 5. ตั้งค่า "Who has access" เป็น "Anyone" (ห้ามเลือก "Anyone with Google account"
+ *    เพราะจะบังคับให้ล็อกอินก่อน ทำให้เว็บหน้าเรียกไม่ได้)
+ *
+ * ===== หมายเหตุ soft-delete =====
+ * การกดลบรายการเดี่ยว หรือกด "ล้างข้อมูลทั้งหมด" จะไม่ลบแถวออกจาก Sheet จริง ๆ
+ * แต่จะเติมคอลัมน์ "สถานะ" เป็น "ลบแล้ว" พร้อม "วันที่ลบ" แทน แถวเดิมยังอยู่ครบใน Sheet
+ * เพื่อเก็บเป็นหลักฐาน ส่วนหน้าเว็บจะไม่ดึงรายการที่ถูกลบมาแสดง/นับยอดอีกต่อไป
+ */
+const SHEET_ID = '15-H1f0_RoUdLrGKp5km1YUpiYT0sR94LYKpiBgyCMuU';
+const FOLDER_ID = '1zPE3fe7M0fZz4-q7-nZfaf1FmqAd0Z3i';
+const SHEET_NAME = 'รายการเงินโครงการ';
 
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบเงินโครงการร่วม 3 บริษัท</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#4c3b6b;
-    --paper:#f4f0ff;
-    --card:#ffffff;
-    --line:#e5defa;
-    --teal:#14b8a6;
-    --teal-dark:#0d9488;
-    --amber:#f59e0b;
-    --amber-bg:#fef3c7;
-    --teal-bg:#ccfbf1;
-    --red:#f43f5e;
-    --red-bg:#ffe4e6;
-    --green-bg:#dcfce7;
-    --green:#22c55e;
-  }
-  *{font-family:'Sarabun',sans-serif;}
-  .mono{font-family:'IBM Plex Mono',monospace;}
-  body{background:linear-gradient(135deg, #fdf4ff 0%, #eef6ff 45%, #f0fdfa 100%);color:var(--ink);min-height:100vh;}
-  input[type="text"], input[type="number"]{
-    background:transparent;
-    border-bottom:1.5px solid var(--line);
-    outline:none;
-  }
-  input[type="text"]:focus, input[type="number"]:focus{
-    border-bottom-color:var(--teal);
-  }
-  .tab-btn{transition:all .15s ease;}
-  ::-webkit-scrollbar{height:6px;width:6px;}
-  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
-  @media (max-width:640px){ .hide-mobile{display:none;} }
-</style>
-</head>
-<body class="min-h-screen">
+const CATEGORY_LABELS = {
+  'cot': 'COT จ่ายเอง',
+  'fund-in': 'เงินเข้ากองกลาง',
+  'fund-out': 'รายจ่ายกองกลาง'
+};
+const REVERSE_CATEGORY_LABELS = {};
+Object.keys(CATEGORY_LABELS).forEach(function (k) {
+  REVERSE_CATEGORY_LABELS[CATEGORY_LABELS[k]] = k;
+});
 
-<div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+const PAYER_LABELS = { a: 'COT', b: 'TMCC', c: 'CPP' };
+const REVERSE_PAYER_LABELS = {};
+Object.keys(PAYER_LABELS).forEach(function (k) {
+  REVERSE_PAYER_LABELS[PAYER_LABELS[k]] = k;
+});
 
-  <!-- Header -->
-  <header class="mb-6">
-    <p class="text-xs tracking-widest uppercase mono" style="color:var(--teal)">โครงการร่วม 3 บริษัท</p>
-    <div class="flex items-baseline justify-between flex-wrap gap-2">
-      <h1 class="text-2xl sm:text-3xl font-bold mt-1" style="color:var(--ink)">ระบบเงินโครงการ</h1>
-      <button id="resetBtn" class="text-xs mono px-3 py-1.5 rounded border" style="border-color:var(--line);color:#7c6a9c">
-        ล้างข้อมูลทั้งหมด
-      </button>
-    </div>
-  </header>
-
-  <!-- Company names -->
-  <section class="mb-6 grid grid-cols-3 gap-3">
-    <div>
-      <label id="labelA" class="text-sm mono font-semibold" style="color:#4c3b6b">COT · 47%</label>
-    </div>
-    <div>
-      <label id="labelB" class="text-sm mono font-semibold" style="color:#4c3b6b">TMCC · 32%</label>
-    </div>
-    <div>
-      <label id="labelC" class="text-sm mono font-semibold" style="color:#4c3b6b">CPP · 21%</label>
-    </div>
-  </section>
-
-  <!-- Tabs -->
-  <div class="flex gap-2 mb-6">
-    <button id="tabCotBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-semibold border-2">
-      <span id="tabCotLabel">COT จ่ายเอง</span>
-      <span class="block text-xs mono mt-0.5 font-normal opacity-80">บันทึกแยก ไม่เกี่ยวกับบริษัทอื่น</span>
-    </button>
-    <button id="tabFundBtn" class="tab-btn flex-1 py-3 rounded-xl text-sm font-semibold border-2">
-      กองกลาง (Common Fund)
-      <span class="block text-xs mono mt-0.5 font-normal opacity-80">เงินรวมของ 3 บริษัท ตามสัดส่วน 47:32:21</span>
-    </button>
-  </div>
-
-  <!-- ===================== COT PANEL ===================== -->
-  <div id="panelCot">
-    <section class="mb-6 rounded-xl border p-5" style="border-color:var(--line);background:var(--card)">
-      <div class="flex items-baseline justify-between">
-        <p class="text-xs mono uppercase tracking-wide" style="color:#8b7ca8">ยอดที่ <span id="cotNameLabel">COT</span> จ่ายเองรวม</p>
-      </div>
-      <p id="cotTotal" class="text-3xl font-bold mono mt-1" style="color:var(--ink)">0.00</p>
-      <p class="text-xs mt-0.5" style="color:#a898c4">บาท</p>
-    </section>
-
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">เพิ่มรายการที่ <span id="cotAddLabel">COT</span> จ่ายเอง</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="cotItemName" type="text" placeholder="เช่น ค่าน้ำมันรถ COT" class="flex-1 py-2 text-sm">
-        <input id="cotItemAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-40 py-2 text-sm mono">
-        <button id="cotAddBtn" class="px-5 py-2 rounded-lg text-sm font-semibold text-white shrink-0" style="background:var(--teal)">+ เพิ่มรายการ</button>
-      </div>
-      <div class="mt-3">
-        <label class="text-xs mono" style="color:#8b7ca8">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-        <select id="cotItemSite" class="w-full py-2 text-sm" style="background:transparent;border-bottom:1.5px solid var(--line);outline:none">
-          <option value="">— ไม่ระบุสถานที่ —</option>
-        </select>
-      </div>
-      <div class="flex items-center gap-3 mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <label for="cotReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 ถ่าย/แนบรูปใบเสร็จ
-        </label>
-        <input id="cotReceiptInput" type="file" accept="image/*" capture="environment" class="hidden">
-        <span id="cotReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
-      </div>
-    </section>
-
-    <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
-        <div class="flex-1">รายการ</div>
-        <div class="w-28 hide-mobile">สถานที่</div>
-        <div class="w-16 text-right hide-mobile">ใบเสร็จ</div>
-        <div class="w-28 text-right">จำนวนเงิน</div>
-        <div class="w-8"></div>
-      </div>
-      <div id="cotList"></div>
-      <div id="cotEmpty" class="px-4 py-10 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการ</div>
-    </section>
-
-    <section class="mt-6 rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="px-4 py-2.5 border-b text-xs mono uppercase tracking-wide" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">สรุปยอดแยกตามสถานที่ลงพื้นที่</div>
-      <div id="cotSiteSummary"></div>
-      <div id="cotSiteSummaryEmpty" class="px-4 py-6 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการที่ระบุสถานที่</div>
-    </section>
-  </div>
-
-  <!-- ===================== FUND PANEL ===================== -->
-  <div id="panelFund">
-    <!-- proportion strip -->
-    <div class="mb-6 rounded-xl overflow-hidden border" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-sm font-semibold">
-        <div id="capA" class="flex-1 py-2.5 text-center border-r" style="border-color:var(--line);background:var(--teal-bg);color:var(--teal-dark)"></div>
-        <div id="capB" class="flex-1 py-2.5 text-center border-r" style="border-color:var(--line);background:#dbeafe;color:#1d4ed8"></div>
-        <div id="capC" class="flex-1 py-2.5 text-center" style="background:var(--amber-bg);color:var(--amber)"></div>
-      </div>
-      <div class="flex h-2">
-        <span style="width:47%;background:var(--teal)"></span>
-        <span style="width:32%;background:#60a5fa"></span>
-        <span style="width:21%;background:var(--amber)"></span>
-      </div>
-    </div>
-
-    <!-- balance summary -->
-    <section class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">ยอดคงเหลือกองกลาง</p>
-        <p id="fundBalance" class="text-2xl font-bold mono mt-1" style="color:var(--teal)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงินเข้ารวม</p>
-        <p id="fundIn" class="text-2xl font-bold mono mt-1" style="color:var(--green)">0.00</p>
-      </div>
-      <div class="rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-        <p class="text-xs mono uppercase" style="color:#8b7ca8">เงินออกรวม</p>
-        <p id="fundOut" class="text-2xl font-bold mono mt-1" style="color:var(--red)">0.00</p>
-      </div>
-    </section>
-
-    <!-- add contribution -->
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">เติมเงินเข้ากองกลาง (ตามสัดส่วน 47:32:21)</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="inNote" type="text" placeholder="หมายเหตุ (ไม่บังคับ) เช่น รอบที่ 1" class="flex-1 py-2 text-sm">
-        <input id="inAmount" type="number" placeholder="ยอดรวมที่เติม (บาท)" class="w-full sm:w-44 py-2 text-sm mono">
-        <button id="inAddBtn" class="px-5 py-2 rounded-lg text-sm font-semibold text-white shrink-0" style="background:var(--green)">+ บันทึกเงินเข้า</button>
-      </div>
-      <p id="inBreakdown" class="text-xs mono mt-2" style="color:#8b7ca8"></p>
-      <div class="flex items-center gap-3 mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <label for="inReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 แนบสลิปโอนเงิน
-        </label>
-        <input id="inReceiptInput" type="file" accept="image/*" capture="environment" class="hidden">
-        <span id="inReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
-      </div>
-    </section>
-
-    <!-- add expense -->
-    <section class="mb-6 rounded-xl border p-4" style="border-color:var(--line);background:var(--card)">
-      <p class="text-xs mono uppercase tracking-wide mb-3" style="color:#8b7ca8">บันทึกรายจ่ายจากกองกลาง</p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input id="outName" type="text" placeholder="เช่น ค่าที่พักลงพื้นที่" class="flex-1 py-2 text-sm">
-        <input id="outAmount" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full sm:w-40 py-2 text-sm mono">
-        <button id="outAddBtn" class="px-5 py-2 rounded-lg text-sm font-semibold text-white shrink-0" style="background:var(--red)">− บันทึกรายจ่าย</button>
-      </div>
-      <div class="mt-3">
-        <label class="text-xs mono" style="color:#8b7ca8">สถานที่ลงพื้นที่ (ไม่บังคับ)</label>
-        <select id="outSite" class="w-full py-2 text-sm" style="background:transparent;border-bottom:1.5px solid var(--line);outline:none">
-          <option value="">— ไม่ระบุสถานที่ —</option>
-        </select>
-      </div>
-      <div class="flex items-center gap-3 mt-3 pt-3 border-t" style="border-color:var(--line)">
-        <label for="outReceiptInput" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
-          📷 ถ่าย/แนบรูปใบเสร็จ
-        </label>
-        <input id="outReceiptInput" type="file" accept="image/*" capture="environment" class="hidden">
-        <span id="outReceiptName" class="text-xs" style="color:#a898c4">ยังไม่ได้แนบรูป</span>
-      </div>
-    </section>
-
-    <!-- history -->
-    <section class="rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="flex text-xs mono uppercase tracking-wide px-4 py-2.5 border-b" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">
-        <div class="w-14">ประเภท</div>
-        <div class="flex-1">รายการ</div>
-        <div class="w-28 hide-mobile">สถานที่</div>
-        <div class="w-16 text-right hide-mobile">ใบเสร็จ</div>
-        <div class="w-24 text-right">จำนวนเงิน</div>
-        <div class="w-24 text-right hide-mobile">คงเหลือ</div>
-        <div class="w-8"></div>
-      </div>
-      <div id="fundHistory"></div>
-      <div id="fundEmpty" class="px-4 py-10 text-center text-sm" style="color:#a898c4">ยังไม่มีรายการเข้า-ออก</div>
-    </section>
-
-    <section class="mt-6 rounded-xl border overflow-hidden" style="border-color:var(--line);background:var(--card)">
-      <div class="px-4 py-2.5 border-b text-xs mono uppercase tracking-wide" style="border-color:var(--line);color:#8b7ca8;background:#f5f0ff">สรุปรายจ่ายกองกลางแยกตามสถานที่ลงพื้นที่</div>
-      <div id="fundSiteSummary"></div>
-      <div id="fundSiteSummaryEmpty" class="px-4 py-6 text-center text-sm" style="color:#a898c4">ยังไม่มีรายจ่ายที่ระบุสถานที่</div>
-    </section>
-  </div>
-
-  <p id="saveStatus" class="text-xs mono text-center mt-6" style="color:#a898c4">&nbsp;</p>
-</div>
-
-<script>
-const RATIOS = { a: 47, b: 32, c: 21 };
-const SITES = [
-  'สทล.15 ราชบุรี (ขท.ราชบุรี)',
-  'สทล.15 นครปฐม (ขท.นครปฐม)',
-  'สทล.11 ลพบุรี',
-  'สทล.12 สุพรรณบุรี',
-  'สทล.1 เชียงใหม่',
-  'สทล.17 กระบี่',
-  'สทล.2 แพร่',
-  'สทล.18 สงขลา',
-  'สทล.9 อุบลราชธานี',
-  'สทล.10 นครราชสีมา',
-  'สทล.13 กรุงเทพฯ',
-  'สทล.14 ชลบุรี',
-  'สทล.15 ประจวบคีรีขันธ์',
-  'สทล.16 นครศรีธรรมราช',
-  'สทล.4 ตาก',
-  'สทล.3 สกลนคร',
-  'สทล.5 พิษณุโลก',
-  'สทล.7 ขอนแก่น',
-  'สทล.6 เพชรบูรณ์',
-  'สทล.8 มหาสารคาม'
+// column order used everywhere below
+const HEADERS = [
+  'ID', 'วันที่บันทึก', 'ประเภท', 'รายการ', 'จำนวนเงิน', 'สถานที่',
+  'COT (47%)', 'TMCC (32%)', 'CPP (21%)', 'ลิงก์ใบเสร็จ/สลิป',
+  'สถานะ', 'วันที่ลบ', 'ผู้จ่ายจริง (ออกใบกำกับภาษี)'
 ];
-function populateSiteSelects(){
-  ['cotItemSite','outSite'].forEach(id => {
-    const sel = document.getElementById(id);
-    SITES.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s; opt.textContent = s;
-      sel.appendChild(opt);
-    });
-  });
-}
-populateSiteSelects();
-const webAppUrl = 'https://script.google.com/macros/s/AKfycbzlVahVJV68ZYZK25MFQ5MfTPYmprBPJGKJZUewZoWlktFHzY_CuKa4Ps10YZhP8Ram/exec';
+const STATUS_COL = HEADERS.indexOf('สถานะ') + 1;      // 1-based column index
+const DELETED_AT_COL = HEADERS.indexOf('วันที่ลบ') + 1; // 1-based column index
+const DELETED_LABEL = 'ลบแล้ว';
 
-let records = []; // {id, category:'cot'|'fund-in'|'fund-out', name, amount, site, breakdown, receiptUrl, receiptBase64, ts}
-let companyNames = { a: 'COT', b: 'TMCC', c: 'CPP' };
-let activeTab = 'cot';
-let pendingReceipt = { cot: null, in: null, out: null };
-
-const fmt = n => n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const uid = () => 'r' + Date.now() + Math.random().toString(36).slice(2,7);
-
-function updateCaptions(){
-  document.getElementById('capA').textContent = `${companyNames.a} · 47%`;
-  document.getElementById('capB').textContent = `${companyNames.b} · 32%`;
-  document.getElementById('capC').textContent = `${companyNames.c} · 21%`;
-  document.getElementById('labelA').textContent = `${companyNames.a} · 47%`;
-  document.getElementById('labelB').textContent = `${companyNames.b} · 32%`;
-  document.getElementById('labelC').textContent = `${companyNames.c} · 21%`;
-  document.getElementById('cotNameLabel').textContent = companyNames.a;
-  document.getElementById('cotAddLabel').textContent = companyNames.a;
-  document.getElementById('tabCotLabel').textContent = companyNames.a + ' จ่ายเอง';
+function getSheet_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(HEADERS);
+    sheet.setFrozenRows(1);
+  } else {
+    ensureHeaders_(sheet); // เผื่อชีทเดิมยังไม่มีคอลัมน์ สถานะ/วันที่ลบ ให้เติมให้อัตโนมัติ
+  }
+  return sheet;
 }
 
-function setTab(tab){
-  activeTab = tab;
-  const cotBtn = document.getElementById('tabCotBtn');
-  const fundBtn = document.getElementById('tabFundBtn');
-  const isCot = tab === 'cot';
-  cotBtn.style.borderColor = isCot ? 'var(--teal)' : 'var(--line)';
-  cotBtn.style.background = isCot ? 'var(--teal-bg)' : 'var(--card)';
-  cotBtn.style.color = isCot ? 'var(--teal-dark)' : 'var(--ink)';
-  fundBtn.style.borderColor = !isCot ? 'var(--teal)' : 'var(--line)';
-  fundBtn.style.background = !isCot ? 'var(--teal-bg)' : 'var(--card)';
-  fundBtn.style.color = !isCot ? 'var(--teal-dark)' : 'var(--ink)';
-  document.getElementById('panelCot').style.display = isCot ? 'block' : 'none';
-  document.getElementById('panelFund').style.display = isCot ? 'none' : 'block';
-}
-document.getElementById('tabCotBtn').addEventListener('click', () => setTab('cot'));
-document.getElementById('tabFundBtn').addEventListener('click', () => setTab('fund'));
-
-function calcCotTotal(){
-  return records.filter(r => r.category === 'cot').reduce((s,r) => s + r.amount, 0);
-}
-function calcFundTotals(){
-  const ins = records.filter(r => r.category === 'fund-in').reduce((s,r) => s + r.amount, 0);
-  const outs = records.filter(r => r.category === 'fund-out').reduce((s,r) => s + r.amount, 0);
-  return { ins, outs, balance: ins - outs };
+// เติม header คอลัมน์ที่ยังขาดต่อท้าย โดยไม่กระทบคอลัมน์/ข้อมูลเดิมที่มีอยู่แล้ว
+function ensureHeaders_(sheet) {
+  const lastCol = sheet.getLastColumn();
+  if (lastCol < HEADERS.length) {
+    sheet.getRange(1, lastCol + 1, 1, HEADERS.length - lastCol)
+      .setValues([HEADERS.slice(lastCol)]);
+  }
 }
 
-function renderCot(){
-  const list = document.getElementById('cotList');
-  const empty = document.getElementById('cotEmpty');
-  const items = records.filter(r => r.category === 'cot');
-  document.getElementById('cotTotal').textContent = fmt(calcCotTotal());
-  list.innerHTML = '';
-  if(items.length === 0){ empty.style.display = 'block'; }
-  else{
-    empty.style.display = 'none';
-    items.forEach(it => {
-      const row = document.createElement('div');
-      row.className = 'flex items-center px-4 py-3 border-b text-sm';
-      row.style.borderColor = 'var(--line)';
-      const receiptCell = it.receiptUrl
-        ? `<a href="${it.receiptUrl}" target="_blank" class="text-xs" title="เปิดใบเสร็จ">🧾</a>`
-        : `<span class="text-xs" style="color:#e5defa">—</span>`;
-      const siteCell = it.site
-        ? `<span class="text-xs" style="color:#7c6a9c">${it.site}</span>`
-        : `<span class="text-xs" style="color:#e5defa">—</span>`;
-      row.innerHTML = `
-        <div class="flex-1 truncate pr-2">${it.name}</div>
-        <div class="w-28 truncate pr-2 hide-mobile">${siteCell}</div>
-        <div class="w-16 text-right hide-mobile">${receiptCell}</div>
-        <div class="w-28 text-right mono">${fmt(it.amount)}</div>
-        <div class="w-8 text-right"><button data-id="${it.id}" class="del-btn text-xs" style="color:var(--red)">✕</button></div>
-      `;
-      list.appendChild(row);
-    });
-    list.querySelectorAll('.del-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        deleteFromSheet(e.currentTarget.dataset.id);
+/**
+ * ===== รันเองครั้งเดียว =====
+ * ใช้เพิ่มแถวหัวตาราง (ID, วันที่บันทึก, ประเภท, ...) ให้ Sheet ที่ยังไม่มีหัวตาราง
+ * วิธีรัน: ใน Apps Script Editor เลือกฟังก์ชัน "addHeaderRow" จาก dropdown ข้างปุ่ม Run
+ *          แล้วกด Run (ครั้งแรกจะขอ authorize สิทธิ์เข้าถึง Sheet ให้กด Allow)
+ * ถ้า Sheet มีหัวตารางที่ถูกต้องอยู่แล้ว ฟังก์ชันนี้จะไม่ทำอะไรซ้ำ
+ */
+function addHeaderRow() {
+  const sheet = getSheet_();
+  const firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell === HEADERS[0]) {
+    Logger.log('มีหัวตารางอยู่แล้ว ไม่ต้องทำอะไรเพิ่ม');
+    return;
+  }
+  sheet.insertRowBefore(1);
+  sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold').setBackground('#f4f0ff');
+  sheet.setFrozenRows(1);
+  Logger.log('เพิ่มหัวตารางเรียบร้อยแล้ว');
+}
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = getSheet_();
+
+    if (data.action === 'delete') {
+      return softDeleteRow_(sheet, data.id);
+    }
+    if (data.action === 'clearAll') {
+      return softClearAll_(sheet);
+    }
+
+    let receiptUrl = '';
+    if (data.imageBase64) {
+      const folder = DriveApp.getFolderById(FOLDER_ID);
+      const matches = data.imageBase64.match(/^data:(.*);base64,(.*)$/);
+      if (matches) {
+        const contentType = matches[1];
+        const base64Data = matches[2];
+        const safeName = (data.itemName || 'receipt').replace(/[^\u0E00-\u0E7Fa-zA-Z0-9]/g, '_');
+        const fileName = safeName + '_' + Utilities.formatDate(new Date(), 'GMT+7', 'yyyyMMdd_HHmmss') + '.jpg';
+        const blob = Utilities.newBlob(Utilities.base64Decode(base64Data), contentType, fileName);
+        const file = folder.createFile(blob);
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        receiptUrl = file.getUrl();
+      }
+    }
+
+    const categoryLabel = CATEGORY_LABELS[data.category] || data.category || '';
+    const breakdown = data.breakdown || {};
+    const id = data.id || Utilities.getUuid();
+
+    sheet.appendRow([
+      id,
+      new Date(),
+      categoryLabel,
+      data.itemName || '',
+      data.amount || 0,
+      data.site || '',
+      breakdown.a !== undefined ? breakdown.a : '',
+      breakdown.b !== undefined ? breakdown.b : '',
+      breakdown.c !== undefined ? breakdown.c : '',
+      receiptUrl,
+      '',  // สถานะ - ว่างไว้ตอนสร้างใหม่
+      '',  // วันที่ลบ - ว่างไว้ตอนสร้างใหม่
+      PAYER_LABELS[data.payer] || ''  // ผู้จ่ายจริง (เฉพาะ fund-out)
+    ]);
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      id: id,
+      receiptUrl: receiptUrl
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// mark แถวเดียวเป็น "ลบแล้ว" แทนการลบแถวจริง
+function softDeleteRow_(sheet, id) {
+  try {
+    const values = sheet.getDataRange().getValues();
+    for (let i = 1; i < values.length; i++) {
+      if (String(values[i][0]) === String(id)) {
+        sheet.getRange(i + 1, STATUS_COL).setValue(DELETED_LABEL);
+        sheet.getRange(i + 1, DELETED_AT_COL).setValue(new Date());
+        return ContentService.createTextOutput(JSON.stringify({ success: true }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'ไม่พบรายการที่จะลบ' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// mark ทุกแถวที่ยังไม่ถูกลบ ให้เป็น "ลบแล้ว" ทั้งหมด แทนการลบแถวจริง
+function softClearAll_(sheet) {
+  try {
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1) {
+      const rowCount = lastRow - 1;
+      const statusValues = sheet.getRange(2, STATUS_COL, rowCount, 1).getValues();
+      const now = new Date();
+      const newStatus = [];
+      const newDeletedAt = [];
+      for (let i = 0; i < rowCount; i++) {
+        if (statusValues[i][0] === DELETED_LABEL) {
+          // ที่ลบไปแล้วก่อนหน้านี้ ปล่อยตามเดิม ไม่ต้องแตะวันที่ลบซ้ำ
+          newStatus.push([DELETED_LABEL]);
+          newDeletedAt.push([sheet.getRange(2 + i, DELETED_AT_COL).getValue()]);
+        } else {
+          newStatus.push([DELETED_LABEL]);
+          newDeletedAt.push([now]);
+        }
+      }
+      sheet.getRange(2, STATUS_COL, rowCount, 1).setValues(newStatus);
+      sheet.getRange(2, DELETED_AT_COL, rowCount, 1).setValues(newDeletedAt);
+    }
+    return ContentService.createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    const sheet = getSheet_();
+    const values = sheet.getDataRange().getValues();
+    const rows = values.slice(1)
+      .filter(function (r) { return r[0]; })                    // skip any blank rows
+      .filter(function (r) { return r[STATUS_COL - 1] !== DELETED_LABEL; }) // skip soft-deleted rows
+      .map(function (r) {
+        return {
+          id: r[0],
+          date: r[1],
+          category: REVERSE_CATEGORY_LABELS[r[2]] || r[2],
+          itemName: r[3],
+          amount: r[4],
+          site: r[5],
+          a: r[6],
+          b: r[7],
+          c: r[8],
+          receiptUrl: r[9],
+          payer: REVERSE_PAYER_LABELS[r[12]] || ''
+        };
       });
-    });
-  }
-  renderSiteSummary(items, 'cotSiteSummary', 'cotSiteSummaryEmpty');
-}
-
-function renderSiteSummary(items, listId, emptyId){
-  const list = document.getElementById(listId);
-  const empty = document.getElementById(emptyId);
-  const withSite = items.filter(r => r.site);
-  list.innerHTML = '';
-  if(withSite.length === 0){ empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  const totals = {};
-  withSite.forEach(r => { totals[r.site] = (totals[r.site] || 0) + r.amount; });
-  Object.keys(totals)
-    .sort((a,b) => totals[b] - totals[a])
-    .forEach(site => {
-      const row = document.createElement('div');
-      row.className = 'flex items-center px-4 py-2.5 border-b text-sm';
-      row.style.borderColor = 'var(--line)';
-      row.innerHTML = `
-        <div class="flex-1 truncate pr-2">${site}</div>
-        <div class="text-right mono" style="color:var(--teal-dark)">${fmt(totals[site])}</div>
-      `;
-      list.appendChild(row);
-    });
-}
-
-function renderFund(){
-  const { ins, outs, balance } = calcFundTotals();
-  document.getElementById('fundBalance').textContent = fmt(balance);
-  document.getElementById('fundIn').textContent = fmt(ins);
-  document.getElementById('fundOut').textContent = fmt(outs);
-
-  const list = document.getElementById('fundHistory');
-  const empty = document.getElementById('fundEmpty');
-  const items = records.filter(r => r.category === 'fund-in' || r.category === 'fund-out')
-                        .sort((a,b) => a.ts - b.ts);
-  list.innerHTML = '';
-  if(items.length === 0){ empty.style.display = 'block'; }
-  else{
-  empty.style.display = 'none';
-  let running = 0;
-  items.forEach(it => {
-    running += it.category === 'fund-in' ? it.amount : -it.amount;
-    const row = document.createElement('div');
-    row.className = 'flex items-center px-4 py-3 border-b text-sm';
-    row.style.borderColor = 'var(--line)';
-    const isIn = it.category === 'fund-in';
-    const badge = isIn
-      ? `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--green-bg);color:var(--green)">เข้า</span>`
-      : `<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:var(--red-bg);color:var(--red)">ออก</span>`;
-    const receiptCell = it.receiptUrl
-      ? `<a href="${it.receiptUrl}" target="_blank" class="text-xs" title="เปิดไฟล์">🧾</a>`
-      : `<span class="text-xs" style="color:#e5defa">—</span>`;
-    const siteCell = it.site
-      ? `<span class="text-xs" style="color:#7c6a9c">${it.site}</span>`
-      : `<span class="text-xs" style="color:#e5defa">—</span>`;
-    const amountColor = isIn ? 'var(--green)' : 'var(--red)';
-    const amountSign = isIn ? '+' : '−';
-    row.innerHTML = `
-      <div class="w-14">${badge}</div>
-      <div class="flex-1 truncate pr-2">${it.name}</div>
-      <div class="w-28 truncate pr-2 hide-mobile">${siteCell}</div>
-      <div class="w-16 text-right hide-mobile">${receiptCell}</div>
-      <div class="w-24 text-right mono" style="color:${amountColor}">${amountSign}${fmt(it.amount)}</div>
-      <div class="w-24 text-right mono hide-mobile" style="color:#8b7ca8">${fmt(running)}</div>
-      <div class="w-8 text-right"><button data-id="${it.id}" class="del-btn text-xs" style="color:var(--red)">✕</button></div>
-    `;
-    list.appendChild(row);
-  });
-  list.querySelectorAll('.del-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      deleteFromSheet(e.currentTarget.dataset.id);
-    });
-  });
-  }
-  renderSiteSummary(records.filter(r => r.category === 'fund-out'), 'fundSiteSummary', 'fundSiteSummaryEmpty');
-}
-
-function renderAll(){
-  updateCaptions();
-  renderCot();
-  renderFund();
-}
-
-
-
-// map a Sheet row (from doGet) back into our internal record shape
-function rowToRecord(r){
-  const rec = { id: r.id, category: r.category, name: r.itemName, amount: Number(r.amount) || 0,
-                site: r.site || '', receiptUrl: r.receiptUrl || '', receiptBase64: null,
-                ts: r.date ? new Date(r.date).getTime() : Date.now() };
-  if(r.category === 'fund-in'){
-    rec.breakdown = { a: Number(r.a) || 0, b: Number(r.b) || 0, c: Number(r.c) || 0 };
-  }
-  return rec;
-}
-
-async function loadFromSheet(){
-  const status = document.getElementById('saveStatus');
-  if(!webAppUrl){ status.textContent = 'ยังไม่ได้ตั้งค่า Web App URL'; renderAll(); setTab('cot'); return; }
-  try{
-    status.textContent = 'กำลังโหลดข้อมูลจาก Google Sheets...';
-    const res = await fetch(webAppUrl, { method: 'GET' });
-    const data = await res.json();
-    if(data.success){
-      records = (data.items || []).map(rowToRecord).sort((a,b) => a.ts - b.ts);
-      status.textContent = 'โหลดข้อมูลจาก Google Sheets สำเร็จ · ข้อมูลนี้ใช้ร่วมกันทุกคนที่เปิดลิงก์นี้';
-    } else {
-      status.textContent = 'โหลดข้อมูลไม่สำเร็จ: ' + (data.error || 'unknown error');
-    }
-  }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (โหลดข้อมูล)';
-    console.error(e);
-  }
-  renderAll();
-  setTab('cot');
-}
-
-async function syncToSheet(record){
-  if(!webAppUrl) return;
-  const status = document.getElementById('saveStatus');
-  try{
-    status.textContent = 'กำลังบันทึกไป Google Sheets...';
-    const res = await fetch(webAppUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        id: record.id,
-        category: record.category,
-        itemName: record.name,
-        amount: record.amount,
-        site: record.site || null,
-        breakdown: record.breakdown || null,
-        imageBase64: record.receiptBase64 || null
-      })
-    });
-    const data = await res.json();
-    if(data.success){
-      record.receiptUrl = data.receiptUrl || '';
-      status.textContent = 'บันทึกไป Google Sheets สำเร็จ';
-      renderAll();
-    } else {
-      status.textContent = 'บันทึกไม่สำเร็จ: ' + (data.error || 'unknown error');
-      records = records.filter(r => r.id !== record.id); // roll back the optimistic add
-      renderAll();
-    }
-  }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (บันทึก)';
-    records = records.filter(r => r.id !== record.id);
-    renderAll();
-    console.error(e);
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      items: rows
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
   }
 }
-
-async function deleteFromSheet(id){
-  const status = document.getElementById('saveStatus');
-  const backup = records;
-  records = records.filter(r => r.id !== id); // optimistic remove
-  renderAll();
-  if(!webAppUrl) return;
-  try{
-    status.textContent = 'กำลังลบใน Google Sheets...';
-    const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'delete', id }) });
-    const data = await res.json();
-    if(data.success){
-      status.textContent = 'ลบรายการแล้ว';
-    } else {
-      status.textContent = 'ลบไม่สำเร็จ: ' + (data.error || 'unknown error');
-      records = backup; renderAll(); // roll back
-    }
-  }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ลบรายการ)';
-    records = backup; renderAll();
-    console.error(e);
-  }
-}
-
-// ---- receipt inputs ----
-function wireReceiptInput(inputId, nameId, key){
-  document.getElementById(inputId).addEventListener('change', e => {
-    const file = e.target.files[0];
-    const label = document.getElementById(nameId);
-    if(!file){ pendingReceipt[key] = null; label.textContent = 'ยังไม่ได้แนบรูป'; return; }
-    const reader = new FileReader();
-    reader.onload = () => { pendingReceipt[key] = reader.result; label.textContent = file.name; };
-    reader.readAsDataURL(file);
-  });
-}
-wireReceiptInput('cotReceiptInput', 'cotReceiptName', 'cot');
-wireReceiptInput('inReceiptInput', 'inReceiptName', 'in');
-wireReceiptInput('outReceiptInput', 'outReceiptName', 'out');
-
-function resetReceipt(inputId, nameId, key){
-  document.getElementById(inputId).value = '';
-  document.getElementById(nameId).textContent = 'ยังไม่ได้แนบรูป';
-  pendingReceipt[key] = null;
-}
-
-// ---- COT add ----
-document.getElementById('cotAddBtn').addEventListener('click', () => {
-  const nameInput = document.getElementById('cotItemName');
-  const amountInput = document.getElementById('cotItemAmount');
-  const name = nameInput.value.trim();
-  const amount = parseFloat(amountInput.value);
-  if(!name || isNaN(amount) || amount <= 0){
-    nameInput.style.borderBottomColor = !name ? 'var(--red)' : 'var(--line)';
-    amountInput.style.borderBottomColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
-    return;
-  }
-  const siteSelect = document.getElementById('cotItemSite');
-  const rec = { id: uid(), category: 'cot', name, amount, site: siteSelect.value, receiptBase64: pendingReceipt.cot, receiptUrl: '', ts: Date.now() };
-  records.push(rec);
-  nameInput.value=''; amountInput.value=''; siteSelect.value='';
-  nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
-  resetReceipt('cotReceiptInput','cotReceiptName','cot');
-  renderAll(); syncToSheet(rec);
-  nameInput.focus();
-});
-
-// ---- Fund IN breakdown preview ----
-document.getElementById('inAmount').addEventListener('input', e => {
-  const amount = parseFloat(e.target.value);
-  const out = document.getElementById('inBreakdown');
-  if(isNaN(amount) || amount <= 0){ out.textContent = ''; return; }
-  const a = amount*RATIOS.a/100, b = amount*RATIOS.b/100, c = amount*RATIOS.c/100;
-  out.textContent = `แบ่งเป็น ${companyNames.a} ${fmt(a)} · ${companyNames.b} ${fmt(b)} · ${companyNames.c} ${fmt(c)} บาท`;
-});
-
-document.getElementById('inAddBtn').addEventListener('click', () => {
-  const noteInput = document.getElementById('inNote');
-  const amountInput = document.getElementById('inAmount');
-  const amount = parseFloat(amountInput.value);
-  if(isNaN(amount) || amount <= 0){
-    amountInput.style.borderBottomColor = 'var(--red)';
-    return;
-  }
-  const note = noteInput.value.trim() || 'เติมเงินกองกลาง';
-  const breakdown = { a: amount*RATIOS.a/100, b: amount*RATIOS.b/100, c: amount*RATIOS.c/100 };
-  const rec = { id: uid(), category: 'fund-in', name: note, amount, breakdown, receiptBase64: pendingReceipt.in, receiptUrl: '', ts: Date.now() };
-  records.push(rec);
-  noteInput.value=''; amountInput.value='';
-  amountInput.style.borderBottomColor='var(--line)';
-  document.getElementById('inBreakdown').textContent = '';
-  resetReceipt('inReceiptInput','inReceiptName','in');
-  renderAll(); syncToSheet(rec);
-});
-
-// ---- Fund OUT ----
-document.getElementById('outAddBtn').addEventListener('click', () => {
-  const nameInput = document.getElementById('outName');
-  const amountInput = document.getElementById('outAmount');
-  const name = nameInput.value.trim();
-  const amount = parseFloat(amountInput.value);
-  if(!name || isNaN(amount) || amount <= 0){
-    nameInput.style.borderBottomColor = !name ? 'var(--red)' : 'var(--line)';
-    amountInput.style.borderBottomColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
-    return;
-  }
-  const siteSelect = document.getElementById('outSite');
-  const rec = { id: uid(), category: 'fund-out', name, amount, site: siteSelect.value, receiptBase64: pendingReceipt.out, receiptUrl: '', ts: Date.now() };
-  records.push(rec);
-  nameInput.value=''; amountInput.value=''; siteSelect.value='';
-  nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
-  resetReceipt('outReceiptInput','outReceiptName','out');
-  renderAll(); syncToSheet(rec);
-  nameInput.focus();
-});
-
-// ---- company names (kept per-browser only; not synced to the sheet) ----
-// company names are fixed (not editable in the UI)
-
-document.getElementById('resetBtn').addEventListener('click', async () => {
-  if(!confirm('ต้องการล้างรายการทั้งหมดหรือไม่? (จะลบข้อมูลใน Google Sheets ด้วย และกู้คืนไม่ได้)')) return;
-  const status = document.getElementById('saveStatus');
-  const backup = records;
-  records = [];
-  renderAll();
-  if(!webAppUrl) return;
-  try{
-    status.textContent = 'กำลังล้างข้อมูลใน Google Sheets...';
-    const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'clearAll' }) });
-    const data = await res.json();
-    status.textContent = data.success ? 'ล้างข้อมูลแล้ว' : 'ล้างไม่สำเร็จ: ' + (data.error || 'unknown error');
-    if(!data.success){ records = backup; renderAll(); }
-  }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ล้างข้อมูล)';
-    records = backup; renderAll();
-    console.error(e);
-  }
-});
-
-loadFromSheet();
-</script>
-</body>
-</html>
