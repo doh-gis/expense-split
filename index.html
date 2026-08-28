@@ -267,9 +267,8 @@ function populateSiteSelects(){
   });
 }
 populateSiteSelects();
-const STORAGE_KEY = 'expense-split-3co-v2';
-const CONFIG_KEY = 'expense-split-3co-config';
 const webAppUrl = 'https://script.google.com/macros/s/AKfycbzlVahVJV68ZYZK25MFQ5MfTPYmprBPJGKJZUewZoWlktFHzY_CuKa4Ps10YZhP8Ram/exec';
+const NAMES_KEY = 'expense-split-3co-names'; // ชื่อบริษัท เก็บเฉพาะในเบราว์เซอร์นี้ (ไม่ sync ข้ามเครื่อง)
 
 let records = []; // {id, category:'cot'|'fund-in'|'fund-out', name, amount, site, breakdown, receiptUrl, receiptBase64, ts}
 let companyNames = { a: 'COT', b: 'TMCC', c: 'CPP' };
@@ -344,8 +343,7 @@ function renderCot(){
     });
     list.querySelectorAll('.del-btn').forEach(btn => {
       btn.addEventListener('click', e => {
-        records = records.filter(r => r.id !== e.currentTarget.dataset.id);
-        renderAll(); persist();
+        deleteFromSheet(e.currentTarget.dataset.id);
       });
     });
   }
@@ -420,8 +418,7 @@ function renderFund(){
   });
   list.querySelectorAll('.del-btn').forEach(btn => {
     btn.addEventListener('click', e => {
-      records = records.filter(r => r.id !== e.currentTarget.dataset.id);
-      renderAll(); persist();
+      deleteFromSheet(e.currentTarget.dataset.id);
     });
   });
   }
@@ -434,50 +431,62 @@ function renderAll(){
   renderFund();
 }
 
-async function persist(){
-  const status = document.getElementById('saveStatus');
-  try{
-    const light = records.map(({ receiptBase64, ...rest }) => rest);
-    await window.storage.set(STORAGE_KEY, JSON.stringify({ records: light, companyNames }), true);
-    status.textContent = 'บันทึกแล้ว · ข้อมูลใช้ร่วมกันทุกคนที่เปิดเครื่องมือนี้';
-  }catch(e){
-    status.textContent = 'บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง';
-    console.error(e);
-  }
+function saveNamesLocally(){
+  try{ localStorage.setItem(NAMES_KEY, JSON.stringify(companyNames)); }catch(e){}
 }
-
-async function load(){
-  const status = document.getElementById('saveStatus');
+function loadNamesLocally(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, true);
-    if(res && res.value){
-      const data = JSON.parse(res.value);
-      records = data.records || [];
-      companyNames = data.companyNames || companyNames;
+    const raw = localStorage.getItem(NAMES_KEY);
+    if(raw){
+      companyNames = { ...companyNames, ...JSON.parse(raw) };
       document.getElementById('nameA').value = companyNames.a;
       document.getElementById('nameB').value = companyNames.b;
       document.getElementById('nameC').value = companyNames.c;
     }
-    status.textContent = 'ข้อมูลนี้เก็บแบบส่วนกลาง ทุกคนที่เปิดลิงก์นี้จะเห็นและแก้ไขร่วมกันได้';
+  }catch(e){}
+}
+
+// map a Sheet row (from doGet) back into our internal record shape
+function rowToRecord(r){
+  const rec = { id: r.id, category: r.category, name: r.itemName, amount: Number(r.amount) || 0,
+                site: r.site || '', receiptUrl: r.receiptUrl || '', receiptBase64: null,
+                ts: r.date ? new Date(r.date).getTime() : Date.now() };
+  if(r.category === 'fund-in'){
+    rec.breakdown = { a: Number(r.a) || 0, b: Number(r.b) || 0, c: Number(r.c) || 0 };
+  }
+  return rec;
+}
+
+async function loadFromSheet(){
+  const status = document.getElementById('saveStatus');
+  if(!webAppUrl){ status.textContent = 'ยังไม่ได้ตั้งค่า Web App URL'; renderAll(); setTab('cot'); return; }
+  try{
+    status.textContent = 'กำลังโหลดข้อมูลจาก Google Sheets...';
+    const res = await fetch(webAppUrl, { method: 'GET' });
+    const data = await res.json();
+    if(data.success){
+      records = (data.items || []).map(rowToRecord).sort((a,b) => a.ts - b.ts);
+      status.textContent = 'โหลดข้อมูลจาก Google Sheets สำเร็จ · ข้อมูลนี้ใช้ร่วมกันทุกคนที่เปิดลิงก์นี้';
+    } else {
+      status.textContent = 'โหลดข้อมูลไม่สำเร็จ: ' + (data.error || 'unknown error');
+    }
   }catch(e){
-    status.textContent = 'เริ่มต้นใหม่ (ยังไม่มีข้อมูลที่บันทึกไว้)';
+    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (โหลดข้อมูล)';
+    console.error(e);
   }
   renderAll();
   setTab('cot');
-}
-
-async function saveConfig(){
-  try{ await window.storage.set(CONFIG_KEY, JSON.stringify({ webAppUrl }), true); }catch(e){}
 }
 
 async function syncToSheet(record){
   if(!webAppUrl) return;
   const status = document.getElementById('saveStatus');
   try{
-    status.textContent = 'กำลังซิงค์ไป Google Sheets...';
+    status.textContent = 'กำลังบันทึกไป Google Sheets...';
     const res = await fetch(webAppUrl, {
       method: 'POST',
       body: JSON.stringify({
+        id: record.id,
         category: record.category,
         itemName: record.name,
         amount: record.amount,
@@ -489,13 +498,40 @@ async function syncToSheet(record){
     const data = await res.json();
     if(data.success){
       record.receiptUrl = data.receiptUrl || '';
-      status.textContent = 'ซิงค์ไป Google Sheets สำเร็จ';
-      renderAll(); persist();
+      status.textContent = 'บันทึกไป Google Sheets สำเร็จ';
+      renderAll();
     } else {
-      status.textContent = 'ซิงค์ไม่สำเร็จ: ' + (data.error || 'unknown error');
+      status.textContent = 'บันทึกไม่สำเร็จ: ' + (data.error || 'unknown error');
+      records = records.filter(r => r.id !== record.id); // roll back the optimistic add
+      renderAll();
     }
   }catch(e){
-    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ';
+    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (บันทึก)';
+    records = records.filter(r => r.id !== record.id);
+    renderAll();
+    console.error(e);
+  }
+}
+
+async function deleteFromSheet(id){
+  const status = document.getElementById('saveStatus');
+  const backup = records;
+  records = records.filter(r => r.id !== id); // optimistic remove
+  renderAll();
+  if(!webAppUrl) return;
+  try{
+    status.textContent = 'กำลังลบใน Google Sheets...';
+    const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'delete', id }) });
+    const data = await res.json();
+    if(data.success){
+      status.textContent = 'ลบรายการแล้ว';
+    } else {
+      status.textContent = 'ลบไม่สำเร็จ: ' + (data.error || 'unknown error');
+      records = backup; renderAll(); // roll back
+    }
+  }catch(e){
+    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ลบรายการ)';
+    records = backup; renderAll();
     console.error(e);
   }
 }
@@ -538,7 +574,7 @@ document.getElementById('cotAddBtn').addEventListener('click', () => {
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
   nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
   resetReceipt('cotReceiptInput','cotReceiptName','cot');
-  renderAll(); persist(); syncToSheet(rec);
+  renderAll(); syncToSheet(rec);
   nameInput.focus();
 });
 
@@ -567,7 +603,7 @@ document.getElementById('inAddBtn').addEventListener('click', () => {
   amountInput.style.borderBottomColor='var(--line)';
   document.getElementById('inBreakdown').textContent = '';
   resetReceipt('inReceiptInput','inReceiptName','in');
-  renderAll(); persist(); syncToSheet(rec);
+  renderAll(); syncToSheet(rec);
 });
 
 // ---- Fund OUT ----
@@ -587,28 +623,41 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
   nameInput.style.borderBottomColor='var(--line)'; amountInput.style.borderBottomColor='var(--line)';
   resetReceipt('outReceiptInput','outReceiptName','out');
-  renderAll(); persist(); syncToSheet(rec);
+  renderAll(); syncToSheet(rec);
   nameInput.focus();
 });
 
-// ---- company names ----
+// ---- company names (kept per-browser only; not synced to the sheet) ----
 ['nameA','nameB','nameC'].forEach((id, i) => {
   const key = ['a','b','c'][i];
   document.getElementById(id).addEventListener('change', e => {
     companyNames[key] = e.target.value.trim() || companyNames[key];
-    renderAll(); persist();
+    renderAll(); saveNamesLocally();
   });
 });
 
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if(confirm('ต้องการล้างรายการทั้งหมดหรือไม่?')){
-    records = [];
-    renderAll(); persist();
+document.getElementById('resetBtn').addEventListener('click', async () => {
+  if(!confirm('ต้องการล้างรายการทั้งหมดหรือไม่? (จะลบข้อมูลใน Google Sheets ด้วย และกู้คืนไม่ได้)')) return;
+  const status = document.getElementById('saveStatus');
+  const backup = records;
+  records = [];
+  renderAll();
+  if(!webAppUrl) return;
+  try{
+    status.textContent = 'กำลังล้างข้อมูลใน Google Sheets...';
+    const res = await fetch(webAppUrl, { method: 'POST', body: JSON.stringify({ action: 'clearAll' }) });
+    const data = await res.json();
+    status.textContent = data.success ? 'ล้างข้อมูลแล้ว' : 'ล้างไม่สำเร็จ: ' + (data.error || 'unknown error');
+    if(!data.success){ records = backup; renderAll(); }
+  }catch(e){
+    status.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ (ล้างข้อมูล)';
+    records = backup; renderAll();
+    console.error(e);
   }
 });
 
-load();
-saveConfig();
+loadNamesLocally();
+loadFromSheet();
 </script>
 </body>
 </html>
