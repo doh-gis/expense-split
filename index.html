@@ -262,6 +262,23 @@
             <button type="button" data-payer="b" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
             <button type="button" data-payer="c" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
           </div>
+          <div id="outBreakdown" class="mt-3 rounded-xl p-3 hidden" style="background:var(--teal-bg)">
+            <p class="text-[11px] font-semibold mb-2" style="color:var(--teal-dark)">สัดส่วนที่แต่ละบริษัทต้องรับผิดชอบ (47:32:21)</p>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div>
+                <p id="outBreakdownLabelA" class="text-[11px]" style="color:var(--ink-faint)">COT · 47%</p>
+                <p id="outBreakdownA" class="text-sm font-bold mono mt-0.5" style="color:var(--ink)">0.00</p>
+              </div>
+              <div>
+                <p id="outBreakdownLabelB" class="text-[11px]" style="color:var(--ink-faint)">TMCC · 32%</p>
+                <p id="outBreakdownB" class="text-sm font-bold mono mt-0.5" style="color:var(--ink)">0.00</p>
+              </div>
+              <div>
+                <p id="outBreakdownLabelC" class="text-[11px]" style="color:var(--ink-faint)">CPP · 21%</p>
+                <p id="outBreakdownC" class="text-sm font-bold mono mt-0.5" style="color:var(--ink)">0.00</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="mt-3 pt-3 border-t" style="border-color:var(--line-soft)">
           <label for="outReceiptInput" class="btn flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold cursor-pointer" style="border-color:var(--line);color:var(--teal-dark)">
@@ -398,6 +415,9 @@ function updateCaptions(){
   document.getElementById('cotAddLabel').textContent = companyNames.a;
   document.getElementById('cotInLabel').textContent = companyNames.a;
   document.getElementById('tabCotLabel').textContent = companyNames.a + ' จ่ายเอง';
+  document.getElementById('outBreakdownLabelA').textContent = `${companyNames.a} · ${RATIOS.a}%`;
+  document.getElementById('outBreakdownLabelB').textContent = `${companyNames.b} · ${RATIOS.b}%`;
+  document.getElementById('outBreakdownLabelC').textContent = `${companyNames.c} · ${RATIOS.c}%`;
 }
 
 function setTab(tab){
@@ -858,6 +878,17 @@ document.getElementById('inAddBtn').addEventListener('click', () => {
   renderAll(); syncToSheet(rec);
 });
 
+// ---- Fund OUT breakdown preview (per-company share, live before saving) ----
+document.getElementById('outAmount').addEventListener('input', e => {
+  const amount = parseFloat(e.target.value);
+  const box = document.getElementById('outBreakdown');
+  if(isNaN(amount) || amount <= 0){ box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+  document.getElementById('outBreakdownA').textContent = fmt(amount*RATIOS.a/100);
+  document.getElementById('outBreakdownB').textContent = fmt(amount*RATIOS.b/100);
+  document.getElementById('outBreakdownC').textContent = fmt(amount*RATIOS.c/100);
+});
+
 // ---- payer picker ----
 document.querySelectorAll('.payer-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -905,6 +936,7 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
     b.style.borderColor = 'var(--line)'; b.style.background = 'transparent'; b.style.color = 'var(--ink)';
   });
   resetReceipt('outReceiptInput','outReceiptName','outReceiptPreview','out');
+  document.getElementById('outBreakdown').classList.add('hidden');
   renderAll(); syncToSheet(rec);
 });
 
