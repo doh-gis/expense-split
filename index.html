@@ -256,14 +256,14 @@
           </div>
         </div>
         <div id="payerPickerWrap" class="mt-4 pt-3 border-t" style="border-color:var(--line-soft)">
-          <label class="field-label">ผู้จ่ายจริง (ออกใบกำกับภาษี) · บังคับเลือก</label>
+          <label class="field-label">ผู้จ่ายจริง (ออกใบกำกับภาษี) · เลือกได้มากกว่า 1 บริษัท ถ้าแยกออกบิลตามสัดส่วน · บังคับเลือกอย่างน้อย 1</label>
           <div class="grid grid-cols-3 gap-2 mt-2">
             <button type="button" data-payer="a" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">COT</button>
             <button type="button" data-payer="b" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">TMCC</button>
             <button type="button" data-payer="c" class="payer-btn btn py-2.5 rounded-xl text-sm font-bold border-2" style="border-color:var(--line);color:var(--ink)">CPP</button>
           </div>
           <div id="outBreakdown" class="mt-3 rounded-xl p-3 hidden" style="background:var(--teal-bg)">
-            <p class="text-[11px] font-semibold mb-2" style="color:var(--teal-dark)">สัดส่วนที่แต่ละบริษัทต้องรับผิดชอบ (47:32:21)</p>
+            <p id="outBreakdownTitle" class="text-[11px] font-semibold mb-2" style="color:var(--teal-dark)">สัดส่วนเป้าหมาย (47:32:21) — เลือกผู้จ่ายจริงด้านบน</p>
             <div class="grid grid-cols-3 gap-2 text-center">
               <div>
                 <p id="outBreakdownLabelA" class="text-[11px]" style="color:var(--ink-faint)">COT · 47%</p>
@@ -374,7 +374,15 @@ let companyNames = { a: 'COT', b: 'TMCC', c: 'CPP' };
 let activeTab = 'cot';
 // each entry is an array of { dataUrl, name } objects, one per attached photo
 let pendingReceipt = { cot: [], cotIn: [], in: [], out: [] };
-let pendingPayer = null; // 'a' | 'b' | 'c' — เลือกก่อนบันทึกรายจ่ายกองกลาง
+let pendingPayers = []; // array of 'a' | 'b' | 'c' — เลือกได้หลายบริษัทก่อนบันทึกรายจ่ายกองกลาง (แยกออกบิลตามสัดส่วน)
+
+// normalize a record's payer field into an array of keys, whether it's stored
+// as an array (new records) or a comma-separated string (loaded from sheet)
+function payerKeys(r){
+  if(Array.isArray(r.payer)) return r.payer.filter(Boolean);
+  if(typeof r.payer === 'string' && r.payer) return r.payer.split(',').map(s => s.trim()).filter(Boolean);
+  return [];
+}
 
 const fmt = n => n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const uid = () => 'r' + Date.now() + Math.random().toString(36).slice(2,7);
@@ -482,7 +490,12 @@ function calcPayerTotals(){
   const outs = records.filter(r => r.category === 'fund-out');
   const total = outs.reduce((s,r) => s + r.amount, 0);
   const totals = { a: 0, b: 0, c: 0 };
-  outs.forEach(r => { if(r.payer && totals[r.payer] !== undefined) totals[r.payer] += r.amount; });
+  outs.forEach(r => {
+    const keys = payerKeys(r).filter(k => totals[k] !== undefined);
+    if(!keys.length) return;
+    const sumRatio = keys.reduce((s,k) => s + RATIOS[k], 0);
+    keys.forEach(k => { totals[k] += sumRatio > 0 ? r.amount * RATIOS[k] / sumRatio : 0; });
+  });
   return { totals, total };
 }
 
@@ -638,8 +651,8 @@ function renderFund(){
     items.forEach(it => {
       const isIn = it.category === 'fund-in';
       running += isIn ? it.amount : -it.amount;
-      const payerBadge = (!isIn && it.payer)
-        ? `<span class="text-[11px] font-bold px-1.5 py-0.5 rounded" style="background:${PAYER_BG[it.payer]};color:var(--ink)">${companyNames[it.payer]}</span>`
+      const payerBadge = (!isIn && payerKeys(it).length)
+        ? payerKeys(it).map(k => `<span class="text-[11px] font-bold px-1.5 py-0.5 rounded" style="background:${PAYER_BG[k]};color:var(--ink)">${companyNames[k]}</span>`).join(' ')
         : '';
       list.appendChild(buildRow(it, running, isIn, payerBadge));
     });
@@ -662,7 +675,9 @@ function renderAll(){
 // map a Sheet row (from doGet) back into our internal record shape
 function rowToRecord(r){
   const rec = { id: r.id, category: r.category, name: r.itemName, amount: Number(r.amount) || 0,
-                site: r.site || '', payer: r.payer || '', receiptUrls: r.receiptUrls || [], receiptBase64List: null,
+                site: r.site || '',
+                payer: r.payer ? String(r.payer).split(',').map(s => s.trim()).filter(Boolean) : [],
+                receiptUrls: r.receiptUrls || [], receiptBase64List: null,
                 ts: r.date ? new Date(r.date).getTime() : Date.now() };
   if(r.category === 'fund-in'){
     rec.breakdown = { a: Number(r.a) || 0, b: Number(r.b) || 0, c: Number(r.c) || 0 };
@@ -704,7 +719,7 @@ async function syncToSheet(record){
         itemName: record.name,
         amount: record.amount,
         site: record.site || null,
-        payer: record.payer || null,
+        payer: (record.payer && record.payer.length) ? record.payer.join(',') : null,
         breakdown: record.breakdown || null,
         imageBase64List: record.receiptBase64List || []
       })
@@ -879,27 +894,55 @@ document.getElementById('inAddBtn').addEventListener('click', () => {
 });
 
 // ---- Fund OUT breakdown preview (per-company share, live before saving) ----
-document.getElementById('outAmount').addEventListener('input', e => {
-  const amount = parseFloat(e.target.value);
+function updateOutBreakdown(){
+  const amount = parseFloat(document.getElementById('outAmount').value);
   const box = document.getElementById('outBreakdown');
+  const title = document.getElementById('outBreakdownTitle');
   if(isNaN(amount) || amount <= 0){ box.classList.add('hidden'); return; }
   box.classList.remove('hidden');
-  document.getElementById('outBreakdownA').textContent = fmt(amount*RATIOS.a/100);
-  document.getElementById('outBreakdownB').textContent = fmt(amount*RATIOS.b/100);
-  document.getElementById('outBreakdownC').textContent = fmt(amount*RATIOS.c/100);
-});
 
-// ---- payer picker ----
+  const keys = ['a','b','c'];
+  const selected = pendingPayers.length ? pendingPayers : keys;
+  const sumRatio = selected.reduce((s,k) => s + RATIOS[k], 0);
+
+  keys.forEach(k => {
+    const isSelected = selected.includes(k);
+    const valEl = document.getElementById('outBreakdown' + k.toUpperCase());
+    const wrap = valEl.parentElement;
+    if(isSelected){
+      const share = sumRatio > 0 ? amount * RATIOS[k] / sumRatio : 0;
+      valEl.textContent = fmt(share);
+      wrap.style.opacity = '1';
+    } else {
+      valEl.textContent = '—';
+      wrap.style.opacity = '0.35';
+    }
+  });
+
+  if(!pendingPayers.length){
+    title.textContent = `สัดส่วนเป้าหมาย (${RATIOS.a}:${RATIOS.b}:${RATIOS.c}) — เลือกผู้จ่ายจริงด้านบน`;
+  } else if(pendingPayers.length === 1){
+    title.textContent = `${companyNames[pendingPayers[0]]} ออกบิลเต็มจำนวน`;
+  } else {
+    title.textContent = `แยกออกบิลตามสัดส่วนของ ${pendingPayers.map(k => companyNames[k]).join(' + ')}`;
+  }
+}
+document.getElementById('outAmount').addEventListener('input', updateOutBreakdown);
+
+// ---- payer picker (เลือกได้หลายบริษัท — แยกออกบิลตามสัดส่วน) ----
 document.querySelectorAll('.payer-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    pendingPayer = btn.dataset.payer;
+    const key = btn.dataset.payer;
+    const idx = pendingPayers.indexOf(key);
+    if(idx === -1) pendingPayers.push(key); else pendingPayers.splice(idx, 1);
     document.querySelectorAll('.payer-btn').forEach(b => {
-      const active = b.dataset.payer === pendingPayer;
+      const active = pendingPayers.includes(b.dataset.payer);
       b.style.borderColor = active ? 'var(--red)' : 'var(--line)';
       b.style.background = active ? 'var(--red-bg)' : 'transparent';
       b.style.color = active ? 'var(--red)' : 'var(--ink)';
     });
     document.getElementById('payerPickerWrap').style.outline = 'none';
+    updateOutBreakdown();
   });
 });
 
@@ -916,7 +959,7 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
     amountInput.style.borderColor = (isNaN(amount)||amount<=0) ? 'var(--red)' : 'var(--line)';
     ok = false;
   }
-  if(!pendingPayer){
+  if(!pendingPayers.length){
     payerWrap.style.outline = '2px solid var(--red)';
     payerWrap.style.borderRadius = '12px';
     payerWrap.style.outlineOffset = '4px';
@@ -925,13 +968,13 @@ document.getElementById('outAddBtn').addEventListener('click', () => {
   if(!ok) return;
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   const siteSelect = document.getElementById('outSite');
-  const rec = { id: uid(), category: 'fund-out', name, amount, site: siteSelect.value, payer: pendingPayer,
+  const rec = { id: uid(), category: 'fund-out', name, amount, site: siteSelect.value, payer: pendingPayers.slice().sort(),
                 receiptBase64List: pendingReceipt.out.map(p => p.dataUrl), receiptUrls: [], ts: Date.now() };
   records.push(rec);
   nameInput.value=''; amountInput.value=''; siteSelect.value='';
   nameInput.style.borderColor='var(--line)'; amountInput.style.borderColor='var(--line)';
   payerWrap.style.outline = 'none';
-  pendingPayer = null;
+  pendingPayers = [];
   document.querySelectorAll('.payer-btn').forEach(b => {
     b.style.borderColor = 'var(--line)'; b.style.background = 'transparent'; b.style.color = 'var(--ink)';
   });
